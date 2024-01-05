@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "firestation")
-public class Firestation {
+public class FireStation {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class Firestation {
 	private String address;
 
 	@Column(name = "station")
-	private Long stationNumber;
+	private String station;
 
 	public Long getId() {
 		return id;
@@ -39,12 +39,12 @@ public class Firestation {
 		this.address = address;
 	}
 
-	public Long getStationNumber() {
-		return stationNumber;
+	public String getStation() {
+		return station;
 	}
 
-	public void setStationNumber(Long stationNumber) {
-		this.stationNumber = stationNumber;
+	public void setStation(String station) {
+		this.station = station;
 	}
 
 }

@@ -1,8 +1,10 @@
 package com.openclassrooms.safetynet.model;
 
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,11 +30,13 @@ public class MedicalRecord {
 	@Column(name = "birthdate")
 	private Date birthDate;
 
+	@ElementCollection
 	@Column(name = "medications")
-	private String medications;
+	private List<String> medications;
 
+	@ElementCollection
 	@Column(name = "allergies")
-	private String allergies;
+	private List<String> allergies;
 
 	public Long getId() {
 		return id;
@@ -66,19 +70,20 @@ public class MedicalRecord {
 		this.birthDate = birthDate;
 	}
 
-	public String getMedications() {
+	public List<String> getMedications() {
 		return medications;
 	}
 
-	public void setMedications(String medications) {
+	public void setMedications(List<String> medications) {
 		this.medications = medications;
 	}
 
-	public String getAllergies() {
+	public List<String> getAllergies() {
 		return allergies;
 	}
 
-	public void setAllergies(String allergies) {
+	public void setAllergies(List<String> allergies) {
 		this.allergies = allergies;
 	}
+
 }
