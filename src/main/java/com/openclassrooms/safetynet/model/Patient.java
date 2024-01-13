@@ -1,9 +1,6 @@
 package com.openclassrooms.safetynet.model;
 
-import java.util.List;
-
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,36 +10,28 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "medicalrecord")
-public class MedicalRecord {
+@Table(name = "patient")
+public class Patient {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long patient_id;
 
-	@Column(name = "firstname")
+	@Column(name = "first_name")
 	private String firstName;
 
-	@Column(name = "lastname")
+	@Column(name = "last_name")
 	private String lastName;
 
 	@Column(name = "birthdate")
 	private String birthDate;
 
-	@ElementCollection
-	@Column(name = "medications")
-	private List<String> medications;
-
-	@ElementCollection
-	@Column(name = "allergies")
-	private List<String> allergies;
-
-	public Long getId() {
-		return id;
+	public Long getPatient_id() {
+		return patient_id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setPatient_id(Long patient_id) {
+		this.patient_id = patient_id;
 	}
 
 	public String getFirstName() {
@@ -67,22 +56,6 @@ public class MedicalRecord {
 
 	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
-	}
-
-	public List<String> getMedications() {
-		return medications;
-	}
-
-	public void setMedications(List<String> medications) {
-		this.medications = medications;
-	}
-
-	public List<String> getAllergies() {
-		return allergies;
-	}
-
-	public void setAllergies(List<String> allergies) {
-		this.allergies = allergies;
 	}
 
 }

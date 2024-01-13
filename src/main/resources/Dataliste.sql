@@ -68,34 +68,254 @@ create table medicalrecord(
     id int PRIMARY KEY AUTO_INCREMENT,
     firstname VARCHAR(100) NOT NULL,
     lastname VARCHAR(100) NOT NULL,
-    birthdate date,
+    birthdate VARCHAR(100),
     medications JSON,
     allergies JSON
 );
 
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("John", "Boyd", '1984-03-06', '["aznol:350mg", "hydrapermazol:100mg"]', '["nillacilan"]');
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Jacob", "Boyd", '1989-03-06', '["pharmacol:5000m", "terazine:10mg", "noznazol:250mg"]', null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Tenley", "Boyd", '2012-02-18', null, '["peanut"]');
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Roger", "Boyd", '2017-09-06', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Felicia", "Boyd",'1986-01-08', '["tetracyclaz:650mg"]', '["xilliathal"]');
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Jonanathan", "Marrack", '1989-01-03', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Tessa", "Carman", '2012-02-18', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Peter", "Duncan", '2000-09-06', null, '["shellfish"]');
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Foster", "Shepard", '1980-01-08', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Tony", "Cooper", '1994-03-06', '["hydrapermazol:300mg", "dodoxadin:30mg"]', '["shellfish"]');
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Lily", "Cooper", '1994-03-06', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Sophia", "Zemicks", '1988-03-06', '["aznol:60mg", "hydrapermazol:900mg", "pharmacol:5000mg", "terazine:500mg"]', '["peanut", "shellfish", "aznol"]');
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Warren", "Zemicks", '1985-03-06', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Zach", "Zemicks", '2017-03-06', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Reginold", "Walker", '1979-08-30', '["thradox:700mg"]', '["illisoxian"]');
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Jamie", "Peters", '1982-03-06', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Ron", "Peters", '1965-04-06', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Allison", "Boyd", '1965-03-15', '["aznol:200mg"]', '["nillacilan"]');
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Brian", "Stelzer", '1975-12-06', '["ibupurin:200mg", "hydrapermazol:400mg"]', '["nillacilan"]');
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Shawna", "Stelzer", '1980-07-08', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Kendrik", "Stelzer", '2014-03-06', '["noxidian:100mg", "pharmacol:2500mg"]', null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Clive", "Ferguson", '1994-03-06', null, null);
-insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Eric", "Cadigan", '1945-08-06', '["tradoxidine:400mg"]', null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("John", "Boyd", "1984-03-06", '["aznol:350mg", "hydrapermazol:100mg"]', '["nillacilan"]');
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Jacob", "Boyd", "1989-03-06", '["pharmacol:5000m", "terazine:10mg", "noznazol:250mg"]', null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Tenley", "Boyd", "2012-02-18", null, '["peanut"]');
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Roger", "Boyd", "2017-09-06", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Felicia", "Boyd","1986-01-08", '["tetracyclaz:650mg"]', '["xilliathal"]');
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Jonanathan", "Marrack", "1989-01-03", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Tessa", "Carman", "2012-02-18", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Peter", "Duncan", "2000-09-06", null, '["shellfish"]');
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Foster", "Shepard", "1980-01-08", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Tony", "Cooper", "1994-03-06", '["hydrapermazol:300mg", "dodoxadin:30mg"]', '["shellfish"]');
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Lily", "Cooper", "1994-03-06", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Sophia", "Zemicks", "1988-03-06", '["aznol:60mg", "hydrapermazol:900mg", "pharmacol:5000mg", "terazine:500mg"]', '["peanut", "shellfish", "aznol"]');
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Warren", "Zemicks", "1985-03-06", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Zach", "Zemicks", "2017-03-06", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Reginold", "Walker", "1979-08-30", '["thradox:700mg"]', '["illisoxian"]');
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Jamie", "Peters", "1982-03-06", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Ron", "Peters", "1965-04-06", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Allison", "Boyd", "1965-03-15", '["aznol:200mg"]', '["nillacilan"]');
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Brian", "Stelzer", "1975-12-06", '["ibupurin:200mg", "hydrapermazol:400mg"]', '["nillacilan"]');
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Shawna", "Stelzer", "1980-07-08", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Kendrik", "Stelzer", "2014-03-06", '["noxidian:100mg", "pharmacol:2500mg"]', null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Clive", "Ferguson", "1994-03-06", null, null);
+insert into medicalrecord(firstname, lastname, birthdate, medications, allergies) values("Eric", "Cadigan", "1945-08-06", '["tradoxidine:400mg"]', null);
+commit;
+
+/* TABLES medialrecord */
+
+CREATE TABLE Patient (
+    patient_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    birthdate VARCHAR(50)
+);
+
+CREATE TABLE Medication (
+    medication_id INT AUTO_INCREMENT PRIMARY KEY,
+    patient_id INT,
+    medication_name VARCHAR(255),
+    dosage VARCHAR(50),
+    FOREIGN KEY (patient_id) REFERENCES Patient(patient_id)
+);
+
+CREATE TABLE Allergie (
+    allergy_id INT AUTO_INCREMENT PRIMARY KEY,
+    patient_id INT,
+    allergy_name VARCHAR(255),
+    FOREIGN KEY (patient_id) REFERENCES Patient(patient_id)
+);
+commit;
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("John", "Boyd", "03/06/1984");
+
+SET @john_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@john_patient_id, "aznol", "350mg"),
+    (@john_patient_id, "hydrapermazol", "100mg");
+
+INSERT INTO Allergie (patient_id, allergy_name)
+VALUES (@john_patient_id, "nillacilan");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Jacob", "Boyd", "03/06/1989");
+
+SET @jacob_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@jacob_patient_id, "pharmacol", "5000mg"),
+    (@jacob_patient_id, "terazine", "10mg"),
+    (@jacob_patient_id, "noznazol", "250mg");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Tenley", "Boyd", "02/18/2012");
+
+SET @tenley_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Allergie (patient_id, allergy_name)
+VALUES (@tenley_patient_id, "peanut");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Roger", "Boyd", "09/06/2017");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Felicia", "Boyd", "01/08/198-");
+
+SET @felicia_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@felicia_patient_id, "tetracyclaz", "650mg");
+
+INSERT INTO Allergie (patient_id, allergy_name)
+VALUES (@felicia_patient_id, "xilliathal");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Jonanathan", "Marrack", "01/03/1989");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Tessa", "Carman", "02/18/2012");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Peter", "Duncan", "09/06/2000");
+
+SET @peter_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Allergie (patient_id, allergy_name)
+VALUES (@peter_patient_id, "shellfish");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Foster", "Shepard", "01/08/1980");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Tony", "Cooper", "03/06/1994");
+
+SET @tony_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@tony_patient_id, "hydrapermazol", "300mg"),
+    (@tony_patient_id, "dodoxadin", "30mg");
+
+INSERT INTO Allergie (patient_id, allergy_name)
+VALUES (@tony_patient_id, "shellfish");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Lily", "Cooper", "03/06/1994");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Sophia", "Zemicks", "03/06/1988");
+
+SET @sophia_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@sophia_patient_id, "aznol", "600mg"),
+    (@sophia_patient_id, "hydrapermazol", "900mg"),
+    (@sophia_patient_id, "pharmacol", "5000mg"),
+    (@sophia_patient_id, "terazine", "500mg");
+
+INSERT INTO Allergie (patient_id, allergy_name)
+VALUES (@sophia_patient_id, "peanut"),
+       (@sophia_patient_id, "shellfish"),
+       (@sophia_patient_id, "aznol");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Warren", "Zemicks", "03/06/1985");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Zack", "Zemicks", "03/06/2017");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Reginold", "Walker", "08/30/1979");
+
+SET @reginold_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@reginold_patient_id, "thradox", "700mg");
+
+INSERT INTO Allergie (patient_id, allergy_name)
+VALUES (@reginold_patient_id, "illisoxian");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Jamie", "Peters", "03/06/1982");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Ron", "Peters", "04/06/1965");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Allison", "Boyd", "03/15/1965");
+
+SET @allison_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@allison_patient_id, "aznol", "200mg");
+
+INSERT INTO Allergie (patient_id, allergy_name)
+VALUES (@allison_patient_id, "nillacilan");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Brian", "Stelzer", "12/06/1975");
+
+SET @brian_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@brian_patient_id, "ibupurin", "200mg"),
+    (@brian_patient_id, "hydrapermazol", "400mg");
+
+INSERT INTO Allergie (patient_id, allergy_name)
+VALUES (@brian_patient_id, "nillacilan");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Shawna", "Stelzer", "07/08/1980");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Kendrick", "Stelzer", "03/06/2014");
+
+SET @kendrick_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@kendrick_patient_id, "noxidian", "100mg"),
+    (@kendrick_patient_id, "pharmacol", "2500mg");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Clive", "Ferguson", "03/06/1994");
+
+-- debut jeu de données
+INSERT INTO Patient (first_name, last_name, birthdate)
+VALUES ("Eric", "Cadigan", "08/06/1945");
+
+SET @eric_patient_id = LAST_INSERT_ID();
+
+INSERT INTO Medication (patient_id, medication_name, dosage)
+VALUES
+    (@eric_patient_id, "tradoxidine", "400mg");
 
 
 commit;

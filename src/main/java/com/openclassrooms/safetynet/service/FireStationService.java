@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.openclassrooms.safetynet.model.FireStation;
 import com.openclassrooms.safetynet.repository.FireStationRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.Data;
 
 @Data
@@ -26,15 +27,20 @@ public class FireStationService {
 		return savedFireStation;
 	}
 
-	public Optional<FireStation> updateFireStaionOfAnAddress(String address) {
+	public Optional<FireStation> findFireStationOfAnAddress(String address) {
 		return fireStationRepository.findByAddress(address);
 	}
 
+	public Iterable<FireStation> findFireStationofAStation(String station) {
+		return fireStationRepository.findByStation(station);
+	}
+
+	@Transactional
 	public void deleteByAddress(String address) {
 		fireStationRepository.deleteByAddress(address);
 	}
 
-	public void deleteAllByStation(String station) {
-		fireStationRepository.deleteAllByStation(station);
+	public void deleteById(Long id) {
+		fireStationRepository.deleteById(id);
 	}
 }
