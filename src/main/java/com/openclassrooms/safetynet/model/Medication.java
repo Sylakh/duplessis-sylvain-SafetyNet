@@ -17,6 +17,7 @@ public class Medication {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "medication_id")
 	private Long id;
 
 	@ManyToOne
@@ -24,10 +25,7 @@ public class Medication {
 	private Patient patient;
 
 	@Column(name = "medication_name")
-	private String medicationName;
-
-	@Column(name = "dosage")
-	private String dosage;
+	private String medication;
 
 	public Long getId() {
 		return id;
@@ -45,20 +43,12 @@ public class Medication {
 		this.patient = patient;
 	}
 
-	public String getMedicationName() {
-		return medicationName;
+	public String getMedication() {
+		return medication;
 	}
 
-	public void setMedicationName(String medicationName) {
-		this.medicationName = medicationName;
-	}
-
-	public String getDosage() {
-		return dosage;
-	}
-
-	public void setDosage(String dosage) {
-		this.dosage = dosage;
+	public void setMedication(String medication) {
+		this.medication = medication;
 	}
 
 }

@@ -26,6 +26,28 @@ public class Patient {
 	@Column(name = "birthdate")
 	private String birthDate;
 
+	// @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval =
+	// true)
+	// private List<Medication> medications = new ArrayList<>();
+
+	// @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval =
+	// true)
+	// private List<Allergy> allergies = new ArrayList<>();
+
+	// Getter and setter methods
+	/**
+	 * public void addMedication(Medication medication) {
+	 * medications.add(medication); medication.setPatient(this); }
+	 * 
+	 * public void removeAllMedications() { medications.forEach(medication ->
+	 * medication.setPatient(null)); medications.clear(); }
+	 * 
+	 * public void addAllergy(Allergy allergy) { allergies.add(allergy);
+	 * allergy.setPatient(this); }
+	 * 
+	 * public void removeAllAllergies() { allergies.forEach(allergy ->
+	 * allergy.setPatient(null)); allergies.clear(); }
+	 */
 	public Long getPatient_id() {
 		return patient_id;
 	}

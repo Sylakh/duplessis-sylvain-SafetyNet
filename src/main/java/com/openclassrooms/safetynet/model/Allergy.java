@@ -17,7 +17,8 @@ public class Allergy {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long allergy_id;
+	@Column(name = "allergy_id")
+	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name = "patient_id")
@@ -27,11 +28,11 @@ public class Allergy {
 	private String allergyName;
 
 	public Long getAllergy_id() {
-		return allergy_id;
+		return id;
 	}
 
-	public void setAllergy_id(Long allergy_id) {
-		this.allergy_id = allergy_id;
+	public void setAllergy_id(Long id) {
+		this.id = id;
 	}
 
 	public Patient getPatient() {

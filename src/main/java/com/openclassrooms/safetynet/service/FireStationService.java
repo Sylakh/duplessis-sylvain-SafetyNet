@@ -1,5 +1,6 @@
 package com.openclassrooms.safetynet.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ public class FireStationService {
 	@Autowired
 	private FireStationRepository fireStationRepository;
 
-	public Iterable<FireStation> getAllMapping() {
-		return fireStationRepository.findAll();
+	public List<FireStation> getAllMapping() {
+		return (List<FireStation>) fireStationRepository.findAll();
 	}
 
 	public FireStation saveMapping(FireStation fireStation) {

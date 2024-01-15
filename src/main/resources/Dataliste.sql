@@ -111,7 +111,6 @@ CREATE TABLE Medication (
     medication_id INT AUTO_INCREMENT PRIMARY KEY,
     patient_id INT,
     medication_name VARCHAR(255),
-    dosage VARCHAR(50),
     FOREIGN KEY (patient_id) REFERENCES Patient(patient_id)
 );
 
@@ -129,10 +128,10 @@ VALUES ("John", "Boyd", "03/06/1984");
 
 SET @john_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@john_patient_id, "aznol", "350mg"),
-    (@john_patient_id, "hydrapermazol", "100mg");
+    (@john_patient_id, "aznol:350mg"),
+    (@john_patient_id, "hydrapermazol:100mg");
 
 INSERT INTO Allergie (patient_id, allergy_name)
 VALUES (@john_patient_id, "nillacilan");
@@ -143,11 +142,11 @@ VALUES ("Jacob", "Boyd", "03/06/1989");
 
 SET @jacob_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@jacob_patient_id, "pharmacol", "5000mg"),
-    (@jacob_patient_id, "terazine", "10mg"),
-    (@jacob_patient_id, "noznazol", "250mg");
+    (@jacob_patient_id, "pharmacol:5000mg"),
+    (@jacob_patient_id, "terazine:10mg"),
+    (@jacob_patient_id, "noznazol:250mg");
 
 -- debut jeu de données
 INSERT INTO Patient (first_name, last_name, birthdate)
@@ -168,9 +167,9 @@ VALUES ("Felicia", "Boyd", "01/08/198-");
 
 SET @felicia_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@felicia_patient_id, "tetracyclaz", "650mg");
+    (@felicia_patient_id, "tetracyclaz:650mg");
 
 INSERT INTO Allergie (patient_id, allergy_name)
 VALUES (@felicia_patient_id, "xilliathal");
@@ -202,10 +201,10 @@ VALUES ("Tony", "Cooper", "03/06/1994");
 
 SET @tony_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@tony_patient_id, "hydrapermazol", "300mg"),
-    (@tony_patient_id, "dodoxadin", "30mg");
+    (@tony_patient_id, "hydrapermazol:300mg"),
+    (@tony_patient_id, "dodoxadin:0mg");
 
 INSERT INTO Allergie (patient_id, allergy_name)
 VALUES (@tony_patient_id, "shellfish");
@@ -220,12 +219,12 @@ VALUES ("Sophia", "Zemicks", "03/06/1988");
 
 SET @sophia_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@sophia_patient_id, "aznol", "600mg"),
-    (@sophia_patient_id, "hydrapermazol", "900mg"),
-    (@sophia_patient_id, "pharmacol", "5000mg"),
-    (@sophia_patient_id, "terazine", "500mg");
+    (@sophia_patient_id, "aznol:600mg"),
+    (@sophia_patient_id, "hydrapermazol:900mg"),
+    (@sophia_patient_id, "pharmacol:5000mg"),
+    (@sophia_patient_id, "terazine:500mg");
 
 INSERT INTO Allergie (patient_id, allergy_name)
 VALUES (@sophia_patient_id, "peanut"),
@@ -246,9 +245,9 @@ VALUES ("Reginold", "Walker", "08/30/1979");
 
 SET @reginold_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@reginold_patient_id, "thradox", "700mg");
+    (@reginold_patient_id, "thradox:700mg");
 
 INSERT INTO Allergie (patient_id, allergy_name)
 VALUES (@reginold_patient_id, "illisoxian");
@@ -267,9 +266,9 @@ VALUES ("Allison", "Boyd", "03/15/1965");
 
 SET @allison_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@allison_patient_id, "aznol", "200mg");
+    (@allison_patient_id, "aznol:200mg");
 
 INSERT INTO Allergie (patient_id, allergy_name)
 VALUES (@allison_patient_id, "nillacilan");
@@ -280,10 +279,10 @@ VALUES ("Brian", "Stelzer", "12/06/1975");
 
 SET @brian_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@brian_patient_id, "ibupurin", "200mg"),
-    (@brian_patient_id, "hydrapermazol", "400mg");
+    (@brian_patient_id, "ibupurin:200mg"),
+    (@brian_patient_id, "hydrapermazol:400mg");
 
 INSERT INTO Allergie (patient_id, allergy_name)
 VALUES (@brian_patient_id, "nillacilan");
@@ -298,10 +297,10 @@ VALUES ("Kendrick", "Stelzer", "03/06/2014");
 
 SET @kendrick_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@kendrick_patient_id, "noxidian", "100mg"),
-    (@kendrick_patient_id, "pharmacol", "2500mg");
+    (@kendrick_patient_id, "noxidian:100mg"),
+    (@kendrick_patient_id, "pharmacol:2500mg");
 
 -- debut jeu de données
 INSERT INTO Patient (first_name, last_name, birthdate)
@@ -313,9 +312,9 @@ VALUES ("Eric", "Cadigan", "08/06/1945");
 
 SET @eric_patient_id = LAST_INSERT_ID();
 
-INSERT INTO Medication (patient_id, medication_name, dosage)
+INSERT INTO Medication (patient_id, medication_name)
 VALUES
-    (@eric_patient_id, "tradoxidine", "400mg");
+    (@eric_patient_id, "tradoxidine:400mg");
 
 
 commit;

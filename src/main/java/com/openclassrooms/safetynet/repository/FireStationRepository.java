@@ -1,5 +1,6 @@
 package com.openclassrooms.safetynet.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -12,7 +13,7 @@ public interface FireStationRepository extends CrudRepository<FireStation, Long>
 
 	Optional<FireStation> findByAddress(String address);
 
-	Iterable<FireStation> findByStation(String station);
+	List<FireStation> findByStation(String station);
 
 	void deleteByAddress(String address);
 

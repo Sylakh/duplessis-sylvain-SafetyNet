@@ -2,87 +2,41 @@ package com.openclassrooms.safetynet.model;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
-
-@Data
-@Entity
-@Table(name = "medicalrecord")
 public class MedicalRecord {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Patient patient;
+	private List<Medication> listMedication;
+	private List<Allergy> listAllergy;
 
-	@Column(name = "firstname")
-	private String firstName;
-
-	@Column(name = "lastname")
-	private String lastName;
-
-	@Column(name = "birthdate")
-	private String birthDate;
-
-	@ElementCollection
-	@Column(name = "medications")
-	private List<String> medications;
-
-	@ElementCollection
-	@Column(name = "allergies")
-	private List<String> allergies;
-
-	public Long getId() {
-		return id;
+	public MedicalRecord(Patient patient, List<Medication> listMedication, List<Allergy> listAllergy) {
+		super();
+		this.patient = patient;
+		this.listMedication = listMedication;
+		this.listAllergy = listAllergy;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Patient getPatient() {
+		return patient;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public void setPatient(Patient patient) {
+		this.patient = patient;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public List<Medication> getListMedication() {
+		return listMedication;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public void setListMedication(List<Medication> listMedication) {
+		this.listMedication = listMedication;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public List<Allergy> getListAllergy() {
+		return listAllergy;
 	}
 
-	public String getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(String birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public List<String> getMedications() {
-		return medications;
-	}
-
-	public void setMedications(List<String> medications) {
-		this.medications = medications;
-	}
-
-	public List<String> getAllergies() {
-		return allergies;
-	}
-
-	public void setAllergies(List<String> allergies) {
-		this.allergies = allergies;
+	public void setListAllergy(List<Allergy> listAllergy) {
+		this.listAllergy = listAllergy;
 	}
 
 }

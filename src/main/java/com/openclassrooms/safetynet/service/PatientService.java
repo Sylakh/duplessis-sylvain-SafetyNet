@@ -1,28 +1,32 @@
 package com.openclassrooms.safetynet.service;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.safetynet.model.Patient;
-import com.openclassrooms.safetynet.repository.AllergyRepository;
-import com.openclassrooms.safetynet.repository.MedicationRepository;
 import com.openclassrooms.safetynet.repository.PatientRepository;
 
+import jakarta.transaction.Transactional;
+import lombok.Data;
+
+@Data
 @Service
 public class PatientService {
 
 	@Autowired
 	private PatientRepository patientRepository;
 
-	@Autowired
-	private MedicationRepository medicationRepository;
+	public Optional<Patient> findPatientByFirstNameAndLastName(String firstName, String lastName) {
+		return patientRepository.findByFirstNameAndLastName(firstName, lastName);
+	}
 
-	@Autowired
-	private AllergyRepository allergyRepository;
-
-	public List<Patient> getAllPatient() {
-		return patientRepository.findAll();
+	@Transactional
+	public void deletePatient(Long patientId) {
+		Patient patient = patientRepository.findById(patientId).orElse(null);
+		if (patient != null) {
+			patientRepository.delete(patient);
+		}
 	}
 }

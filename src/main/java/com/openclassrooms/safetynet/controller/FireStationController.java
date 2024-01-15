@@ -1,5 +1,7 @@
 package com.openclassrooms.safetynet.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.safetynet.DTO.FireStationDTO;
+import com.openclassrooms.safetynet.mapper.FireStationMapper;
 import com.openclassrooms.safetynet.model.FireStation;
 import com.openclassrooms.safetynet.service.FireStationService;
 
@@ -23,16 +27,24 @@ public class FireStationController {
 	@Autowired
 	private FireStationService fireStationService;
 
+	@Autowired
+	private FireStationMapper fireStationMapper;
+
 	@GetMapping("/firestation")
-	public Iterable<FireStation> GetAllAddress() {
+	public List<FireStationDTO> GetAllAddress() {
 		logger.info("Get all firestations from database");
-		return fireStationService.getAllMapping();
+		List<FireStation> listFireStation = fireStationService.getAllMapping();
+		List<FireStationDTO> listFireStationDTO = new ArrayList<>();
+		for (FireStation fireStation : listFireStation) {
+			listFireStationDTO.add(fireStationMapper.convertFireStationToFireStationDTO(fireStation));
+		}
+		return listFireStationDTO;
 	}
 
 	@PostMapping("/firestation")
-	public FireStation createMappingAddressWithStation(@RequestBody FireStation fireStation) {
+	public FireStationDTO createMappingAddressWithStation(@RequestBody FireStation fireStation) {
 		logger.info("Create a new mapping in database");
-		return fireStationService.saveMapping(fireStation);
+		return fireStationMapper.convertFireStationToFireStationDTO(fireStationService.saveMapping(fireStation));
 	}
 
 	/**
@@ -42,7 +54,7 @@ public class FireStationController {
 	 * @throws Exception
 	 */
 	@PutMapping("/firestation")
-	public FireStation updateFireStationOfAnAddress(@RequestBody FireStation fireStation) throws Exception {
+	public FireStationDTO updateFireStationOfAnAddress(@RequestBody FireStation fireStation) throws Exception {
 		logger.info("update process of the station of a specific address begins");
 		Optional<FireStation> optionalFireStation = fireStationService
 				.findFireStationOfAnAddress(fireStation.getAddress());
@@ -50,7 +62,8 @@ public class FireStationController {
 			FireStation updatedFireStation = optionalFireStation.get();
 			updatedFireStation.setStation(fireStation.getStation());
 			logger.info("update done");
-			return fireStationService.saveMapping(updatedFireStation);
+			return fireStationMapper
+					.convertFireStationToFireStationDTO(fireStationService.saveMapping(updatedFireStation));
 		} else {
 			logger.error("address not found");
 			throw new Exception("Firestation not found (Put)");
