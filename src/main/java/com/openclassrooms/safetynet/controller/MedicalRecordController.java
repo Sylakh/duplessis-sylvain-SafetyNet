@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -104,6 +105,39 @@ public class MedicalRecordController {
 			patientService.deletePatient(patient_id);
 			logger.info("patient by firstname and lastname deleted");
 		}
+	}
+
+	@PutMapping("/medicalrecord")
+	public MedicalRecordDTO updateMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) {
+		logger.info("update process of a medical records begins");
+		MedicalRecord unCompleteMedicalRecord = medicalRecordMapper.convertFromDTO(medicalRecordDTO);
+		String firstName = unCompleteMedicalRecord.getPatient().getFirstName();
+		String lastName = unCompleteMedicalRecord.getPatient().getLastName();
+		String birthDate = unCompleteMedicalRecord.getPatient().getBirthDate();
+		Optional<Patient> optionalPatient = patientService.findPatientByFirstNameAndLastName(firstName, lastName);
+		if (optionalPatient.isPresent()) {
+			Patient patientFound = optionalPatient.get();
+			logger.info("patient to update found");
+			patientFound.setBirthDate(birthDate);
+			unCompleteMedicalRecord.setPatient(patientFound);
+			// delete old Allergy
+			List<Allergy> listAllergyToBeDeleted = allergyService.findAllAllergyByPatient(patientFound);
+			for (Allergy allergy : listAllergyToBeDeleted) {
+				allergyService.deleteAllergyById(allergy.getAllergy_id());
+			}
+			// delete old Medication
+			List<Medication> listMedicationToBeDeleted = medicationService.findAllMedicationByPatient(patientFound);
+			for (Medication medication : listMedicationToBeDeleted) {
+				medicationService.deleteMedicationById(medication.getId());
+			}
+			medicalRecordService.saveMedicalRecord(unCompleteMedicalRecord);
+			logger.info("update process done");
+			return medicalRecordMapper.convertToDTO(unCompleteMedicalRecord);
+		} else {
+			logger.info("update process impossible, patient not found");
+			return null;
+		}
+
 	}
 
 }
