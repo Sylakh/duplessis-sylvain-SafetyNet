@@ -1,5 +1,6 @@
 package com.openclassrooms.safetynet.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -11,5 +12,11 @@ import com.openclassrooms.safetynet.model.Person;
 public interface PersonRepository extends CrudRepository<Person, Long> {
 
 	Optional<Person> findByFirstNameAndLastName(String firstName, String lastName);
+
+	List<Person> findAllByCity(String city);
+
+	List<Person> findAllByAddress(String address);
+
+	List<Person> findAll();
 
 }

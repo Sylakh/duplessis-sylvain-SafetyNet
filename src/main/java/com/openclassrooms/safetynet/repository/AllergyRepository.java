@@ -1,7 +1,6 @@
 package com.openclassrooms.safetynet.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -14,7 +13,7 @@ public interface AllergyRepository extends CrudRepository<Allergy, Long> {
 
 	void deleteById(Long id);
 
-	Optional<Allergy> findByPatient(Patient patient);
+	// Optional<Allergy> findByPatient(Patient patient);
 
 	List<Allergy> findAllByPatient(Patient patient);
 

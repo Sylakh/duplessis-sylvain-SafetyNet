@@ -1,10 +1,24 @@
 package com.openclassrooms.safetynet.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -12,6 +26,8 @@ import lombok.Data;
 @Entity
 @Table(name = "patient")
 public class Patient {
+
+	private static final Logger logger = LogManager.getLogger("model Patient");
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,28 +42,14 @@ public class Patient {
 	@Column(name = "birthdate")
 	private String birthDate;
 
-	// @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval =
-	// true)
-	// private List<Medication> medications = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "patient_id")
+	List<Medication> medication = new ArrayList<>();
 
-	// @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval =
-	// true)
-	// private List<Allergy> allergies = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "patient_id")
+	List<Allergy> allergy = new ArrayList<>();
 
-	// Getter and setter methods
-	/**
-	 * public void addMedication(Medication medication) {
-	 * medications.add(medication); medication.setPatient(this); }
-	 * 
-	 * public void removeAllMedications() { medications.forEach(medication ->
-	 * medication.setPatient(null)); medications.clear(); }
-	 * 
-	 * public void addAllergy(Allergy allergy) { allergies.add(allergy);
-	 * allergy.setPatient(this); }
-	 * 
-	 * public void removeAllAllergies() { allergies.forEach(allergy ->
-	 * allergy.setPatient(null)); allergies.clear(); }
-	 */
 	public Long getPatient_id() {
 		return patient_id;
 	}
@@ -80,4 +82,40 @@ public class Patient {
 		this.birthDate = birthDate;
 	}
 
+	public Date convertStringToDate(String dateString) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		try {
+			// Convertir la chaîne en objet Date
+			Date date = dateFormat.parse(dateString);
+			return date;
+		} catch (ParseException e) {
+			// Gérer l'exception si la conversion échoue
+			logger.error("Conversion String to Date failed", e);
+			;
+			return null;
+		}
+	}
+
+	public int calculateAge(String birthDate) {
+		Date dateOfBirth = convertStringToDate(birthDate);
+
+		if (dateOfBirth != null) {
+			Calendar birthDateCal = Calendar.getInstance();
+			birthDateCal.setTime(dateOfBirth);
+
+			Calendar nowCal = Calendar.getInstance();
+
+			int age = nowCal.get(Calendar.YEAR) - birthDateCal.get(Calendar.YEAR);
+
+			// Vérifier si l'anniversaire n'a pas encore eu lieu cette année
+			if (nowCal.get(Calendar.DAY_OF_YEAR) < birthDateCal.get(Calendar.DAY_OF_YEAR)) {
+				age--;
+			}
+
+			return age;
+		} else {
+			logger.error("the calcul of Age failed!");
+			return -1;
+		}
+	}
 }
