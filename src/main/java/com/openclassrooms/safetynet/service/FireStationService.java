@@ -48,17 +48,13 @@ public class FireStationService {
 		fireStationRepository.deleteByAddress(address);
 	}
 
-	public void deleteById(Long id) {
-		fireStationRepository.deleteById(id);
-	}
-
-	public List<FireStationDTO> getAllAddress() {
+	public List<FireStation> getAllAddress() {
 		List<FireStation> listFireStation = (List<FireStation>) fireStationRepository.findAll();
 		List<FireStationDTO> listFireStationDTO = new ArrayList<>();
 		for (FireStation fireStation : listFireStation) {
 			listFireStationDTO.add(fireStationMapper.convertFireStationToFireStationDTO(fireStation));
 		}
-		return listFireStationDTO;
+		return listFireStation;
 	}
 
 	public FireStationDTO createMappingAddressWithStation(FireStation fireStation) {
@@ -86,7 +82,8 @@ public class FireStationService {
 			Optional<FireStation> optionalFireStationFromAddress = fireStationRepository
 					.findByAddress(fireStation.getAddress());
 			if (optionalFireStationFromAddress.isPresent()) {
-				fireStationRepository.deleteByAddress(fireStation.getAddress());
+				FireStation fireStationFound = optionalFireStationFromAddress.get();
+				fireStationRepository.deleteByAddress(fireStationFound.getAddress());
 				logger.info("delete process done for address:" + fireStation.getAddress());
 			}
 		} else if (fireStation.getStation() != null && fireStation.getAddress() == null) {

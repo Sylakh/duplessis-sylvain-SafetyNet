@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.openclassrooms.safetynet.model.FireStation;
 
 @Repository
-public interface FireStationRepository extends CrudRepository<FireStation, Long> {
+public interface FireStationRepository extends CrudRepository<FireStation, String> {
 
 	Optional<FireStation> findByAddress(String address);
 

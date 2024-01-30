@@ -5,18 +5,14 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.openclassrooms.safetynet.model.MedicalRecord;
 import com.openclassrooms.safetynet.model.Medication;
-import com.openclassrooms.safetynet.model.Patient;
 
 @Repository
 public interface MedicationRepository extends CrudRepository<Medication, Long> {
 
-	// void deleteByPatient(Patient patient);
+	List<Medication> findAllByMedicalRecord(MedicalRecord medicalRecord);
 
-	// Optional<Medication> findByPatient(Patient patient);
-
-	void deleteById(Long id);
-
-	List<Medication> findAllByPatient(Patient patient);
+	void deleteAllByMedicalRecord(MedicalRecord medicalRecord);
 
 }

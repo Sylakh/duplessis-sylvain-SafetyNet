@@ -1,10 +1,15 @@
 package com.openclassrooms.safetynet.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -15,13 +20,21 @@ public class Person {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "firestation_address")
+	private FireStation fireStation;
 
 	@Column(name = "firstname")
 	private String firstName;
 
 	@Column(name = "lastname")
 	private String lastName;
+
+	@Column(name = "name")
+	private String name;
 
 	@Column(name = "address")
 	private String address;
@@ -37,6 +50,33 @@ public class Person {
 
 	@Column(name = "email")
 	private String email;
+
+	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+	private MedicalRecord medicalRecord;
+
+	public MedicalRecord getMedicalRecord() {
+		return medicalRecord;
+	}
+
+	public void setMedicalRecord(MedicalRecord medicalRecord) {
+		this.medicalRecord = medicalRecord;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public FireStation getFireStation() {
+		return fireStation;
+	}
+
+	public void setFireStation(FireStation fireStation) {
+		this.fireStation = fireStation;
+	}
 
 	public Long getId() {
 		return id;
@@ -100,6 +140,10 @@ public class Person {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Person() {
+		// TODO Auto-generated constructor stub
 	}
 
 }

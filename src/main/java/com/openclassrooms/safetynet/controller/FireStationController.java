@@ -1,12 +1,9 @@
 package com.openclassrooms.safetynet.controller;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,13 +20,6 @@ public class FireStationController {
 
 	@Autowired
 	private FireStationService fireStationService;
-
-	@GetMapping("/firestation")
-	public List<FireStationDTO> GetAllAddress() {
-		logger.info("Get all firestations from database");
-		List<FireStationDTO> listFireStationDTO = fireStationService.getAllAddress();
-		return listFireStationDTO;
-	}
 
 	@PostMapping("/firestation")
 	public FireStationDTO createMappingAddressWithStation(@RequestBody FireStation fireStation) {

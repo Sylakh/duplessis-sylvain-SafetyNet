@@ -1,7 +1,5 @@
 package com.openclassrooms.safetynet.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,41 +26,36 @@ public class PersonService {
 	@Autowired
 	private PersonMapper personMapper;
 
-	public Person savePerson(Person person) {
-		Person savedPerson = personRepository.save(person);
-		return savedPerson;
-	}
-
-	public Optional<Person> findPersonByFirstNameAndLastName(String firstName, String lastName) {
-		return personRepository.findByFirstNameAndLastName(firstName, lastName);
-	}
-
-	public void deleteById(Long id) {
-		personRepository.deleteById(id);
-
-	}
-
-	public List<Person> getAllPersonByCity(String city) {
-		return personRepository.findAllByCity(city);
-	}
-
-	public List<Person> getAllPersonByAddress(String address) {
-		return personRepository.findAllByAddress(address);
-	}
-
-	public List<PersonDTO> getAllPerson() {
-		List<Person> listPerson = personRepository.findAll();
-		List<PersonDTO> listPersonDTO = new ArrayList<>();
-		for (Person person : listPerson) {
-			listPersonDTO.add(personMapper.convertPersonToPersonDTO(person));
+	public PersonDTO savePerson(PersonDTO personDTO) {
+		Person person = personMapper.convertPersonFromPersonDTO(personDTO);
+		if (person != null) {
+			Person savedPerson = personRepository.save(person);
+			return personMapper.convertPersonToPersonDTO(savedPerson);
+		} else {
+			return null;
 		}
-		return listPersonDTO;
+
 	}
 
-	public PersonDTO createPerson(Person person) {
-		return personMapper.convertPersonToPersonDTO(personRepository.save(person));
-	}
-
+	/**
+	 * public List<PersonDTO> getAllPerson() { List<Person> listPerson =
+	 * personRepository.findAll(); List<PersonDTO> listPersonDTO = new
+	 * ArrayList<>(); for (Person person : listPerson) {
+	 * listPersonDTO.add(personMapper.convertPersonToPersonDTO(person)); } return
+	 * listPersonDTO; }
+	 */
+	/**
+	 * public PersonDTO createPerson(PersonDTO personDTO) {
+	 * 
+	 * Person personToSave = personMapper.convertPersonFromPersonDTO(personDTO);
+	 * Optional<FireStation> optionalFireStation =
+	 * fireStationRepository.findByAddress(personDTO.address()); if
+	 * (optionalFireStation.isPresent()) { logger.info("firestation found");
+	 * FireStation fireStationFound = optionalFireStation.get();
+	 * fireStationFound.addPerson(personToSave); return
+	 * personMapper.convertPersonToPersonDTO(personRepository.save(personToSave)); }
+	 * else { return null; } }
+	 */
 	public void deletePersonByFirstNameAndLastName(String firstName, String lastName) throws Exception {
 
 		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(firstName, lastName);
@@ -76,26 +69,19 @@ public class PersonService {
 		}
 	}
 
-	public PersonDTO updatePersonByFirstNameAndLastName(Person person) throws Exception {
+	public PersonDTO updatePersonByFirstNameAndLastName(PersonDTO personDTO) throws Exception {
+		Person person = personMapper.convertPersonFromPersonDTO(personDTO);
 		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(person.getFirstName(),
 				person.getLastName());
 		if (optionalPerson.isPresent()) {
 			Person updatedPerson = optionalPerson.get();
-			if (person.getAddress() != null) {
-				updatedPerson.setAddress(person.getAddress());
-			}
-			if (person.getCity() != null) {
-				updatedPerson.setCity(person.getCity());
-			}
-			if (person.getZip() != null) {
-				updatedPerson.setZip(person.getZip());
-			}
-			if (person.getPhone() != null) {
-				updatedPerson.setPhone(person.getPhone());
-			}
-			if (person.getEmail() != null) {
-				updatedPerson.setEmail(person.getEmail());
-			}
+			updatedPerson.setAddress(person.getAddress());
+			updatedPerson.setCity(person.getCity());
+			updatedPerson.setZip(person.getZip());
+			updatedPerson.setPhone(person.getPhone());
+			updatedPerson.setEmail(person.getEmail());
+			updatedPerson.setFireStation(person.getFireStation());
+			updatedPerson.setMedicalRecord(person.getMedicalRecord());
 			logger.info("update process done");
 			return personMapper.convertPersonToPersonDTO(personRepository.save(updatedPerson));
 		} else {

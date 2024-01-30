@@ -1,10 +1,13 @@
 package com.openclassrooms.safetynet.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -14,22 +17,14 @@ import lombok.Data;
 public class FireStation {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
 	@Column(name = "address")
 	private String address;
 
 	@Column(name = "station")
 	private String station;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+	@OneToMany(mappedBy = "fireStation", cascade = CascadeType.ALL, orphanRemoval = false)
+	private List<Person> persons = new ArrayList<>();
 
 	public String getAddress() {
 		return address;
@@ -45,6 +40,19 @@ public class FireStation {
 
 	public void setStation(String station) {
 		this.station = station;
+	}
+
+	public List<Person> getPersons() {
+		return persons;
+	}
+
+	public void setPersons(List<Person> persons) {
+		this.persons = persons;
+	}
+
+	public void addPerson(Person person) {
+		persons.add(person);
+		person.setFireStation(this);
 	}
 
 }

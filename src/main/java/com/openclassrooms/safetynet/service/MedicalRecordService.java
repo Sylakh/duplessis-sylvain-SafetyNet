@@ -14,11 +14,13 @@ import com.openclassrooms.safetynet.mapper.MedicalRecordMapper;
 import com.openclassrooms.safetynet.model.Allergy;
 import com.openclassrooms.safetynet.model.MedicalRecord;
 import com.openclassrooms.safetynet.model.Medication;
-import com.openclassrooms.safetynet.model.Patient;
+import com.openclassrooms.safetynet.model.Person;
 import com.openclassrooms.safetynet.repository.AllergyRepository;
+import com.openclassrooms.safetynet.repository.MedicalRecordRepository;
 import com.openclassrooms.safetynet.repository.MedicationRepository;
-import com.openclassrooms.safetynet.repository.PatientRepository;
+import com.openclassrooms.safetynet.repository.PersonRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.Data;
 
 @Data
@@ -28,7 +30,7 @@ public class MedicalRecordService {
 	private static final Logger logger = LogManager.getLogger("MedicalRecordService");
 
 	@Autowired
-	private PatientRepository patientRepository;
+	private MedicalRecordRepository medicalRecordRepository;
 
 	@Autowired
 	private MedicationRepository medicationRepository;
@@ -39,108 +41,117 @@ public class MedicalRecordService {
 	@Autowired
 	private MedicalRecordMapper medicalRecordMapper;
 
-	public MedicalRecord saveMedicalRecord(MedicalRecord medicalRecord) {
+	@Autowired
+	private PersonRepository personRepository;
 
-		Patient patient = medicalRecord.getPatient();
-		Patient savedPatient = patientRepository.save(patient);
+	@Transactional
+	public void deletePatientByFirstNameAndLastName(String firstName, String lastName) throws Exception {
 
-		List<Medication> listMedication = medicalRecord.getListMedication();
-		List<Medication> savedListMedication = new ArrayList<>();
-		for (Medication medication : listMedication) {
-			medication.setPatient(patient);
-			savedListMedication.add(medicationRepository.save(medication));
+		logger.info("delete patient process by firstname and lastname begins");
+		Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName,
+				lastName);
+		if (optionalMedicalRecord.isPresent()) {
+			logger.info("medical record by firstname and lastname found");
+			MedicalRecord medicalRecordToBeDeleted = optionalMedicalRecord.get();
+			Long medicalRecord_id = medicalRecordToBeDeleted.getMedicalRecord_id();
+			medicalRecordRepository.deleteById(medicalRecord_id);
+			logger.info("medicalrecord by firstname and lastname deleted");
 		}
-
-		List<Allergy> listAllergy = medicalRecord.getListAllergy();
-		List<Allergy> savedListAllergy = new ArrayList<>();
-		for (Allergy allergy : listAllergy) {
-			allergy.setPatient(patient);
-			savedListAllergy.add(allergyRepository.save(allergy));
-		}
-		return new MedicalRecord(savedPatient, savedListMedication, savedListAllergy);
-
 	}
 
 	public MedicalRecordDTO createMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
 		logger.info("creation process of a new medical records begins");
+
 		MedicalRecord medicalRecord = medicalRecordMapper.convertFromDTO(medicalRecordDTO);
+		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(medicalRecord.getFirstName(),
+				medicalRecord.getLastName());
+		logger.info("creation process of a new medical records: mapper done");
+		if (optionalPerson.isPresent()) {
+			Person personFound = optionalPerson.get();
+			medicalRecord.setPerson(personFound);
+			MedicalRecord savedMedicalRecord = medicalRecordRepository.save(medicalRecord);
 
-		Patient patient = medicalRecord.getPatient();
-		Patient savedPatient = patientRepository.save(patient);
-
-		List<Medication> listMedication = medicalRecord.getListMedication();
-		List<Medication> savedListMedication = new ArrayList<>();
-		for (Medication medication : listMedication) {
-			medication.setPatient(patient);
-			savedListMedication.add(medicationRepository.save(medication));
-		}
-
-		List<Allergy> listAllergy = medicalRecord.getListAllergy();
-		List<Allergy> savedListAllergy = new ArrayList<>();
-		for (Allergy allergy : listAllergy) {
-			allergy.setPatient(patient);
-			savedListAllergy.add(allergyRepository.save(allergy));
-		}
-		MedicalRecord savedMedicalRecord = new MedicalRecord(savedPatient, savedListMedication, savedListAllergy);
-		logger.info("creation process of a new medical records done");
-		return medicalRecordMapper.convertToDTO(savedMedicalRecord);
-	}
-
-	public void deletePatientByFirstNameAndLastName(String firstName, String lastName) throws Exception {
-
-		logger.info("delete patient process by firstname and lastname begins");
-		Optional<Patient> optionalPatient = patientRepository.findByFirstNameAndLastName(firstName, lastName);
-		if (optionalPatient.isPresent()) {
-			logger.info("patient by firstname and lastname found");
-			Patient patientToBeDeleted = optionalPatient.get();
-			Long patient_id = patientToBeDeleted.getPatient_id();
-			patientRepository.deleteById(patient_id);
-			logger.info("patient by firstname and lastname deleted");
-		}
-	}
-
-	public MedicalRecordDTO updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
-		logger.info("update process of a medical records begins");
-		MedicalRecord unCompleteMedicalRecord = medicalRecordMapper.convertFromDTO(medicalRecordDTO);
-		String firstName = unCompleteMedicalRecord.getPatient().getFirstName();
-		String lastName = unCompleteMedicalRecord.getPatient().getLastName();
-		String birthDate = unCompleteMedicalRecord.getPatient().getBirthDate();
-		Optional<Patient> optionalPatient = patientRepository.findByFirstNameAndLastName(firstName, lastName);
-		if (optionalPatient.isPresent()) {
-			Patient patientFound = optionalPatient.get();
-			logger.info("patient to update found");
-			patientFound.setBirthDate(birthDate);
-			patientRepository.save(patientFound);
-			unCompleteMedicalRecord.setPatient(patientFound);
-
-			// delete old Allergy
-			List<Allergy> listAllergyToBeDeleted = allergyRepository.findAllByPatient(patientFound);
-			for (Allergy allergy : listAllergyToBeDeleted) {
-				allergyRepository.deleteById(allergy.getAllergy_id());
-			}
-			// delete old Medication
-			List<Medication> listMedicationToBeDeleted = medicationRepository.findAllByPatient(patientFound);
-			for (Medication medication : listMedicationToBeDeleted) {
-				medicationRepository.deleteById(medication.getId());
-			}
-
-			List<Medication> listMedication = unCompleteMedicalRecord.getListMedication();
+			List<Medication> listMedication = medicalRecord.getMedication();
 			List<Medication> savedListMedication = new ArrayList<>();
 			for (Medication medication : listMedication) {
-				medication.setPatient(patientFound);
+				medication.setMedicalRecord(medicalRecord);
 				savedListMedication.add(medicationRepository.save(medication));
 			}
 
-			List<Allergy> listAllergy = unCompleteMedicalRecord.getListAllergy();
+			List<Allergy> listAllergy = medicalRecord.getAllergy();
 			List<Allergy> savedListAllergy = new ArrayList<>();
 			for (Allergy allergy : listAllergy) {
-				allergy.setPatient(patientFound);
+				allergy.setMedicalRecord(medicalRecord);
 				savedListAllergy.add(allergyRepository.save(allergy));
 			}
-			logger.info("update process done");
-			return medicalRecordMapper.convertToDTO(unCompleteMedicalRecord);
+
+			logger.info("creation process of a new medical records done");
+			return medicalRecordMapper.convertToDTO(savedMedicalRecord);
 		} else {
-			logger.info("update process impossible, patient not found");
+			logger.error("creation of medicalRecord impossible, person not present");
+			return null;
+		}
+	}
+
+	@Transactional
+	public MedicalRecordDTO updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
+		logger.info("update process of a medical records begins");
+		MedicalRecord unCompleteMedicalRecord = medicalRecordMapper.convertFromDTO(medicalRecordDTO);
+		String firstName = unCompleteMedicalRecord.getFirstName();
+		String lastName = unCompleteMedicalRecord.getLastName();
+		String birthDate = unCompleteMedicalRecord.getBirthDate();
+		Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName,
+				lastName);
+
+		if (optionalMedicalRecord.isPresent()) {
+			MedicalRecord medicalRecordFound = optionalMedicalRecord.get();
+			logger.info("medicalrecord to update found");
+			logger.info("medicalrecordfound id:" + medicalRecordFound.getMedicalRecord_id());
+			medicalRecordFound.setBirthDate(birthDate);
+			medicalRecordFound.setPerson(unCompleteMedicalRecord.getPerson());
+
+			// delete old Allergy
+			List<Allergy> listAllergyToBeDeleted = new ArrayList<>();
+			listAllergyToBeDeleted = allergyRepository.findAllByMedicalRecord(medicalRecordFound);
+			for (Allergy allergy : listAllergyToBeDeleted) {
+				logger.info("allergy to be deleted id" + allergy.getId());
+				allergyRepository.deleteById(allergy.getId());
+			}
+
+			// allergyRepository.deleteAllByMedicalRecord(medicalRecordFound);
+
+			// medicalRecordRepository.save(medicalRecordFound);
+
+			logger.info("old Allergy deleted");
+			// delete old Medication
+			/**
+			 * List<Medication> listMedicationToBeDeleted = medicationRepository
+			 * .findAllByMedicalRecord(medicalRecordFound); for (Medication medication :
+			 * listMedicationToBeDeleted) {
+			 * medicationRepository.deleteById(medication.getId()); }
+			 */
+			//
+			// medicationRepository.deleteAllByMedicalRecord(medicalRecordFound);
+			// logger.info("old allergy deleted");
+			// logger.info("old medication deleted");
+			/**
+			 * 
+			 * List<Medication> listMedication = unCompleteMedicalRecord.getMedication();
+			 * List<Medication> savedListMedication = new ArrayList<>(); for (Medication
+			 * medication : listMedication) {
+			 * medication.setMedicalRecord(medicalRecordFound);
+			 * savedListMedication.add(medicationRepository.save(medication)); }
+			 * 
+			 * List<Allergy> listAllergy = unCompleteMedicalRecord.getAllergy();
+			 * List<Allergy> savedListAllergy = new ArrayList<>(); for (Allergy allergy :
+			 * listAllergy) { allergy.setMedicalRecord(medicalRecordFound);
+			 * savedListAllergy.add(allergyRepository.save(allergy)); }
+			 */
+			medicalRecordRepository.save(medicalRecordFound);
+			logger.info("update process done");
+			return medicalRecordMapper.convertToDTO(medicalRecordFound);
+		} else {
+			logger.info("update process impossible, medicalrecord not found");
 			return null;
 		}
 

@@ -10,28 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.safetynet.DTO.ChildAlertResponsDTO;
-import com.openclassrooms.safetynet.mapper.ChildAlertMapper;
-import com.openclassrooms.safetynet.service.FireStationService;
-import com.openclassrooms.safetynet.service.PatientService;
-import com.openclassrooms.safetynet.service.PersonService;
 import com.openclassrooms.safetynet.service.URLService;
 
 @RestController
 public class URLController {
 
 	private static final Logger logger = LogManager.getLogger("URLController");
-
-	@Autowired
-	private FireStationService fireStationService;
-
-	@Autowired
-	private PersonService personService;
-
-	@Autowired
-	private PatientService patientService;
-
-	@Autowired
-	private ChildAlertMapper childAlertMapper;
 
 	@Autowired
 	private URLService uRLService;
@@ -77,11 +61,7 @@ public class URLController {
 	 * caserne de pompiers la desservant. La liste doit inclure le nom, le numéro de
 	 * téléphone, l'âge et les antécédents médicaux (médicaments, posologie et
 	 * allergies) de chaque personne.
+	 * 
 	 */
-	@GetMapping("/fire")
-	public FireResponsDTO fire(@RequestParam String address) {
-		logger.info("Request fire sent for address " + address);
-		return uRLService.fire(address);
-	}
 
 }

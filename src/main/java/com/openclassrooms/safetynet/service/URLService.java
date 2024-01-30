@@ -13,10 +13,10 @@ import com.openclassrooms.safetynet.DTO.ChildAlertDTO;
 import com.openclassrooms.safetynet.DTO.ChildAlertResponsDTO;
 import com.openclassrooms.safetynet.mapper.ChildAlertMapper;
 import com.openclassrooms.safetynet.model.FireStation;
-import com.openclassrooms.safetynet.model.Patient;
+import com.openclassrooms.safetynet.model.MedicalRecord;
 import com.openclassrooms.safetynet.model.Person;
 import com.openclassrooms.safetynet.repository.FireStationRepository;
-import com.openclassrooms.safetynet.repository.PatientRepository;
+import com.openclassrooms.safetynet.repository.MedicalRecordRepository;
 import com.openclassrooms.safetynet.repository.PersonRepository;
 
 import lombok.Data;
@@ -34,21 +34,20 @@ public class URLService {
 	private FireStationRepository fireStationRepository;
 
 	@Autowired
-	private PatientRepository patientRepository;
+	private MedicalRecordRepository patientRepository;
 
 	@Autowired
 	private ChildAlertMapper childAlertMapper;
 
 	public List<String> communityEmail(String city) {
 		logger.info("Request communityEmail sent for city " + city);
-		List<String> communityEmail = new ArrayList<>();
-		List<Person> community = new ArrayList<>();
-		community = personRepository.findAllByCity(city);
-		for (Person person : community) {
-			communityEmail.add(person.getEmail());
-		}
-		logger.info("Request communityEmail done");
-		return communityEmail;
+		/**
+		 * List<String> communityEmail = new ArrayList<>(); List<Person> community = new
+		 * ArrayList<>(); community = personRepository.findAllByCity(city); for (Person
+		 * person : community) { communityEmail.add(person.getEmail()); }
+		 * logger.info("Request communityEmail done"); return communityEmail;
+		 */
+		return null;
 	}
 
 	public List<String> phoneAlert(String station) {
@@ -73,10 +72,10 @@ public class URLService {
 		List<Person> listPerson = new ArrayList<>();
 		listPerson = personRepository.findAllByAddress(address);
 		for (Person person : listPerson) {
-			Optional<Patient> optionalPatient = patientRepository.findByFirstNameAndLastName(person.getFirstName(),
-					person.getLastName());
+			Optional<MedicalRecord> optionalPatient = patientRepository
+					.findByFirstNameAndLastName(person.getFirstName(), person.getLastName());
 			if (optionalPatient.isPresent()) {
-				Patient patient = optionalPatient.get();
+				MedicalRecord patient = optionalPatient.get();
 				listChildAlertDTO.add(childAlertMapper.convertPatientToChildAlertDTO(patient));
 			} else {
 				logger.error(

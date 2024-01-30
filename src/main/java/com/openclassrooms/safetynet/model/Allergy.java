@@ -12,7 +12,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "allergie")
+@Table(name = "allergy")
 public class Allergy {
 
 	@Id
@@ -21,26 +21,26 @@ public class Allergy {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "patient_id")
-	private Patient patient;
+	@JoinColumn(name = "medical_record_id")
+	private MedicalRecord medicalRecord;
 
 	@Column(name = "allergy_name")
 	private String allergyName;
 
-	public Long getAllergy_id() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setAllergy_id(Long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public Patient getPatient() {
-		return patient;
+	public MedicalRecord getMedicalRecord() {
+		return medicalRecord;
 	}
 
-	public void setPatient(Patient patient) {
-		this.patient = patient;
+	public void setMedicalRecord(MedicalRecord medicalRecord) {
+		this.medicalRecord = medicalRecord;
 	}
 
 	public String getAllergyName() {
