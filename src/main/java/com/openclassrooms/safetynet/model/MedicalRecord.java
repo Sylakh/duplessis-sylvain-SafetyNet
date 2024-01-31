@@ -47,10 +47,10 @@ public class MedicalRecord {
 	@Column(name = "birthdate")
 	private String birthDate;
 
-	@OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, orphanRemoval = false)
 	List<Medication> medication = new ArrayList<>();
 
-	@OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, orphanRemoval = false)
 	List<Allergy> allergy = new ArrayList<>();
 
 	@OneToOne(fetch = FetchType.LAZY)

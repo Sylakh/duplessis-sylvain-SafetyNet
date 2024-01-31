@@ -51,7 +51,7 @@ public class Person {
 	@Column(name = "email")
 	private String email;
 
-	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = false)
 	private MedicalRecord medicalRecord;
 
 	public MedicalRecord getMedicalRecord() {

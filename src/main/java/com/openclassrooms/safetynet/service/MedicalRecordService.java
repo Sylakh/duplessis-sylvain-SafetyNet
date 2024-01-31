@@ -102,8 +102,10 @@ public class MedicalRecordService {
 		String birthDate = unCompleteMedicalRecord.getBirthDate();
 		Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName,
 				lastName);
+		Long id;
 
 		if (optionalMedicalRecord.isPresent()) {
+
 			MedicalRecord medicalRecordFound = optionalMedicalRecord.get();
 			logger.info("medicalrecord to update found");
 			logger.info("medicalrecordfound id:" + medicalRecordFound.getMedicalRecord_id());
@@ -113,40 +115,41 @@ public class MedicalRecordService {
 			// delete old Allergy
 			List<Allergy> listAllergyToBeDeleted = new ArrayList<>();
 			listAllergyToBeDeleted = allergyRepository.findAllByMedicalRecord(medicalRecordFound);
+
 			for (Allergy allergy : listAllergyToBeDeleted) {
-				logger.info("allergy to be deleted id" + allergy.getId());
+				logger.info("allergy to be deleted id:" + allergy.getId());
+				id = allergy.getId();
+				medicalRecordFound.getAllergy().remove(allergy);
 				allergyRepository.deleteById(allergy.getId());
 			}
-
-			// allergyRepository.deleteAllByMedicalRecord(medicalRecordFound);
-
-			// medicalRecordRepository.save(medicalRecordFound);
-
 			logger.info("old Allergy deleted");
+
 			// delete old Medication
-			/**
-			 * List<Medication> listMedicationToBeDeleted = medicationRepository
-			 * .findAllByMedicalRecord(medicalRecordFound); for (Medication medication :
-			 * listMedicationToBeDeleted) {
-			 * medicationRepository.deleteById(medication.getId()); }
-			 */
-			//
-			// medicationRepository.deleteAllByMedicalRecord(medicalRecordFound);
-			// logger.info("old allergy deleted");
-			// logger.info("old medication deleted");
-			/**
-			 * 
-			 * List<Medication> listMedication = unCompleteMedicalRecord.getMedication();
-			 * List<Medication> savedListMedication = new ArrayList<>(); for (Medication
-			 * medication : listMedication) {
-			 * medication.setMedicalRecord(medicalRecordFound);
-			 * savedListMedication.add(medicationRepository.save(medication)); }
-			 * 
-			 * List<Allergy> listAllergy = unCompleteMedicalRecord.getAllergy();
-			 * List<Allergy> savedListAllergy = new ArrayList<>(); for (Allergy allergy :
-			 * listAllergy) { allergy.setMedicalRecord(medicalRecordFound);
-			 * savedListAllergy.add(allergyRepository.save(allergy)); }
-			 */
+			List<Medication> listMedicationToBeDeleted = new ArrayList<>();
+			listMedicationToBeDeleted = medicationRepository.findAllByMedicalRecord(medicalRecordFound);
+
+			for (Medication medication : listMedicationToBeDeleted) {
+				logger.info("medication to be deleted id:" + medication.getId());
+				id = medication.getId();
+				medicalRecordFound.getMedication().remove(medication);
+				medicationRepository.deleteById(medication.getId());
+			}
+			logger.info("old medication deleted");
+
+			List<Medication> listMedication = unCompleteMedicalRecord.getMedication();
+			for (Medication medication : listMedication) {
+				medication.setMedicalRecord(medicalRecordFound);
+				medicationRepository.save(medication);
+				medicalRecordFound.getMedication().add(medication);
+			}
+
+			List<Allergy> listAllergy = unCompleteMedicalRecord.getAllergy();
+			for (Allergy allergy : listAllergy) {
+				allergy.setMedicalRecord(medicalRecordFound);
+				allergyRepository.save(allergy);
+				medicalRecordFound.getAllergy().add(allergy);
+			}
+
 			medicalRecordRepository.save(medicalRecordFound);
 			logger.info("update process done");
 			return medicalRecordMapper.convertToDTO(medicalRecordFound);
