@@ -1,5 +1,8 @@
 package com.openclassrooms.safetynet.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,6 +27,7 @@ public class Person {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "firestation_address")
 	private FireStation fireStation;
 
@@ -52,6 +56,7 @@ public class Person {
 	private String email;
 
 	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = false)
+	@JsonManagedReference
 	private MedicalRecord medicalRecord;
 
 	public MedicalRecord getMedicalRecord() {

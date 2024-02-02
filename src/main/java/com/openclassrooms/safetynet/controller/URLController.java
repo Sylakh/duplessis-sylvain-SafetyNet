@@ -1,6 +1,7 @@
 package com.openclassrooms.safetynet.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.safetynet.DTO.ChildAlertResponsDTO;
+import com.openclassrooms.safetynet.DTO.FireResponsDTO;
+import com.openclassrooms.safetynet.DTO.FloodStationPersonDTO;
+import com.openclassrooms.safetynet.DTO.PersonInfoResponsDTO;
 import com.openclassrooms.safetynet.service.URLService;
 
 @RestController
@@ -63,5 +67,36 @@ public class URLController {
 	 * allergies) de chaque personne.
 	 * 
 	 */
+	@GetMapping("/fire")
+	public FireResponsDTO fire(@RequestParam String address) {
+		logger.info("Request fire sent for address " + address);
+		return uRLService.fire(address);
+	}
 
+	/**
+	 * http://localhost:8080/personInfo?firstName=<firstName>&lastName=<lastName>
+	 * Cette url doit retourner le nom, l'adresse, l'âge, l'adresse mail et les
+	 * antécédents médicaux (médicaments, posologie, allergies) de chaque habitant.
+	 * Si plusieurs personnes portent le même nom, elles doivent toutes apparaître.
+	 */
+	@GetMapping("/personInfo")
+	public PersonInfoResponsDTO personInfo(@RequestParam String firstName, @RequestParam String lastName) {
+		logger.info("Request personInfo sent for " + firstName + " " + lastName);
+		return uRLService.personInfo(firstName, lastName);
+	}
+
+	/**
+	 * http://localhost:8080/flood/stations?stations=<a list of station_numbers>
+	 * Cette url doit retourner une liste de tous les foyers desservis par la
+	 * caserne. Cette liste doit regrouper les personnes par adresse. Elle doit
+	 * aussi inclure le nom, le numéro de téléphone et l'âge des habitants, et faire
+	 * figurer leurs antécédents médicaux (médicaments, posologie et allergies) à
+	 * côté de chaque nom.
+	 */
+
+	@GetMapping("/flood/stations")
+	public Map<String, List<FloodStationPersonDTO>> floodStations(@RequestParam String[] stations) {
+		logger.info("Request flood/stations sent ");
+		return uRLService.floodStations(stations);
+	}
 }

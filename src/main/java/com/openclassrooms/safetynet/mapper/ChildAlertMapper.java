@@ -8,9 +8,9 @@ import com.openclassrooms.safetynet.model.MedicalRecord;
 @Component
 public class ChildAlertMapper {
 
-	public ChildAlertDTO convertPatientToChildAlertDTO(MedicalRecord patient) {
-		return new ChildAlertDTO(patient.getFirstName(), patient.getLastName(),
-				patient.calculateAge(patient.getBirthDate()));
+	public ChildAlertDTO convertPatientToChildAlertDTO(MedicalRecord medicalRecord) {
+		return new ChildAlertDTO(medicalRecord.getFirstName(), medicalRecord.getLastName(),
+				medicalRecord.calculateAge(medicalRecord.getBirthDate()));
 	}
 
 }

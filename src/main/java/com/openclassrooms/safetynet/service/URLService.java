@@ -1,7 +1,9 @@
 package com.openclassrooms.safetynet.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +13,14 @@ import org.springframework.stereotype.Service;
 
 import com.openclassrooms.safetynet.DTO.ChildAlertDTO;
 import com.openclassrooms.safetynet.DTO.ChildAlertResponsDTO;
+import com.openclassrooms.safetynet.DTO.FireDTO;
+import com.openclassrooms.safetynet.DTO.FireResponsDTO;
+import com.openclassrooms.safetynet.DTO.FloodStationPersonDTO;
+import com.openclassrooms.safetynet.DTO.PersonInfoDTO;
+import com.openclassrooms.safetynet.DTO.PersonInfoResponsDTO;
 import com.openclassrooms.safetynet.mapper.ChildAlertMapper;
+import com.openclassrooms.safetynet.mapper.FireDTOMapper;
+import com.openclassrooms.safetynet.mapper.PersonInfoDTOMapper;
 import com.openclassrooms.safetynet.model.FireStation;
 import com.openclassrooms.safetynet.model.MedicalRecord;
 import com.openclassrooms.safetynet.model.Person;
@@ -39,15 +48,23 @@ public class URLService {
 	@Autowired
 	private ChildAlertMapper childAlertMapper;
 
+	@Autowired
+	private FireDTOMapper fireDTOMapper;
+
+	@Autowired
+	private PersonInfoDTOMapper personInfoDTOMapper;
+
 	public List<String> communityEmail(String city) {
 		logger.info("Request communityEmail sent for city " + city);
-		/**
-		 * List<String> communityEmail = new ArrayList<>(); List<Person> community = new
-		 * ArrayList<>(); community = personRepository.findAllByCity(city); for (Person
-		 * person : community) { communityEmail.add(person.getEmail()); }
-		 * logger.info("Request communityEmail done"); return communityEmail;
-		 */
-		return null;
+
+		List<String> communityEmail = new ArrayList<>();
+		List<Person> community = new ArrayList<>();
+		community = personRepository.findAllByCity(city);
+		for (Person person : community) {
+			communityEmail.add(person.getEmail());
+		}
+		logger.info("Request communityEmail done");
+		return communityEmail;
 	}
 
 	public List<String> phoneAlert(String station) {
@@ -99,6 +116,76 @@ public class URLService {
 		}
 		logger.info("Request childAlert done");
 		return childAlertRespons;
+	}
+
+	public FireResponsDTO fire(String address) {
+		logger.info("Request fire sent for address " + address);
+		Optional<FireStation> optionalFireStation = fireStationRepository.findByAddress(address);
+		if (optionalFireStation.isPresent()) {
+			FireStation fireStationFound = optionalFireStation.get();
+			List<FireDTO> listPersons = fireDTOMapper.convertFireStationIntoFireDTO(fireStationFound);
+			return new FireResponsDTO(
+					"l'adresse " + address + " est couverte par la caserne " + fireStationFound.getStation() + " .",
+					listPersons);
+		} else {
+			return null;
+		}
+
+	}
+
+	public PersonInfoResponsDTO personInfo(String firstName, String lastName) {
+		logger.info("Request personinfo sent for " + firstName + " " + lastName);
+		List<Person> listPerson = new ArrayList<>();
+		listPerson = personRepository.findAllByLastName(lastName);
+		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(firstName, lastName);
+		PersonInfoDTO personInfoFoundDTO = null;
+		if (optionalPerson.isPresent()) {
+			Person personFound = optionalPerson.get();
+			logger.info("person found");
+			personInfoFoundDTO = personInfoDTOMapper.convertPersonToPersonInfoDTO(personFound);
+			listPerson.remove(personFound);
+		} else {
+			logger.info("person not found");
+			return null;
+		}
+		List<String> listFamily = new ArrayList<>();
+		for (Person person : listPerson) {
+			listFamily.add(person.getFirstName() + " " + person.getLastName());
+		}
+		return new PersonInfoResponsDTO(personInfoFoundDTO, listFamily);
+	}
+
+	public Map<String, List<FloodStationPersonDTO>> floodStations(String[] stations) {
+		logger.info("Request flood/stations sent ");
+		for (String station : stations) {
+			logger.info("Request flood/stations sent for station " + station);
+		}
+		List<FireStation> allStations = new ArrayList<>();
+		List<FireStation> allParticularStation = new ArrayList<>();
+		for (String station : stations) {
+			allParticularStation = fireStationRepository.findAllByStation(station);
+			for (FireStation fireStation : allParticularStation) {
+				allStations.add(fireStation);
+			}
+			allParticularStation = null;
+		}
+		Map<String, List<FloodStationPersonDTO>> floodStationsRespons = new HashMap<>();
+
+		List<Person> listPerson = new ArrayList<>();
+		for (FireStation fireStation : allStations) {
+			List<FloodStationPersonDTO> listFloodStationPersonDTO = new ArrayList<>();
+			listPerson = fireStation.getPersons();
+			for (Person person : listPerson) {
+				listFloodStationPersonDTO
+						.add(new FloodStationPersonDTO(person.getFirstName(), person.getLastName(), person.getPhone(),
+								person.getMedicalRecord().calculateAge(person.getMedicalRecord().getBirthDate()),
+								person.getMedicalRecord().getMedication(), person.getMedicalRecord().getAllergy()));
+			}
+			floodStationsRespons.put(fireStation.getAddress(), listFloodStationPersonDTO);
+			// listFloodStationPersonDTO = null;
+		}
+
+		return floodStationsRespons;
 	}
 
 }

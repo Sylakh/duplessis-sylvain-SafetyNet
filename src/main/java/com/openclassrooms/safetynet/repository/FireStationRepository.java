@@ -17,4 +17,6 @@ public interface FireStationRepository extends CrudRepository<FireStation, Strin
 
 	void deleteByAddress(String address);
 
+	List<FireStation> findAllByStation(String station);
+
 }
