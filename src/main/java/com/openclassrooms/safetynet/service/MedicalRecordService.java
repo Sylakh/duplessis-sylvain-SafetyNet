@@ -110,7 +110,7 @@ public class MedicalRecordService {
 			logger.info("medicalrecord to update found");
 			logger.info("medicalrecordfound id:" + medicalRecordFound.getMedicalRecord_id());
 			medicalRecordFound.setBirthDate(birthDate);
-			medicalRecordFound.setPerson(unCompleteMedicalRecord.getPerson());
+			// medicalRecordFound.setPerson(unCompleteMedicalRecord.getPerson());
 
 			// delete old Allergy
 			List<Allergy> listAllergyToBeDeleted = new ArrayList<>();
@@ -149,7 +149,6 @@ public class MedicalRecordService {
 				allergyRepository.save(allergy);
 				medicalRecordFound.getAllergy().add(allergy);
 			}
-
 			medicalRecordRepository.save(medicalRecordFound);
 			logger.info("update process done");
 			return medicalRecordMapper.convertToDTO(medicalRecordFound);

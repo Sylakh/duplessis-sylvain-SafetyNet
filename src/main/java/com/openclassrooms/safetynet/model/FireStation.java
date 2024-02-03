@@ -23,7 +23,7 @@ public class FireStation {
 	@Column(name = "station")
 	private String station;
 
-	@OneToMany(mappedBy = "fireStation", cascade = CascadeType.ALL, orphanRemoval = false)
+	@OneToMany(mappedBy = "fireStation", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = false)
 	private List<Person> persons = new ArrayList<>();
 
 	public String getAddress() {

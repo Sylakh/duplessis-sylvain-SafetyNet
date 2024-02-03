@@ -57,6 +57,7 @@ public class Person {
 
 	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = false)
 	@JsonManagedReference
+
 	private MedicalRecord medicalRecord;
 
 	public MedicalRecord getMedicalRecord() {

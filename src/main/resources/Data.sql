@@ -34,9 +34,8 @@ create table person(
     zip VARCHAR(10),
     phone VARCHAR(20),
     email VARCHAR(100),
-    firestation_address VARCHAR(255),
-    medical_record_id INT,
-    FOREIGN KEY (firestation_address) REFERENCES firestation(address)
+    firestation_address VARCHAR(255)
+ /*   ,FOREIGN KEY (firestation_address) REFERENCES firestation(address)*/
 );
 
 insert into person(firstname, lastname, name, address, city, zip, phone, email,firestation_address) values("John", "Boyd", "John,Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com", "1509 Culver St");
@@ -82,14 +81,14 @@ CREATE TABLE Medication (
     medication_id INT AUTO_INCREMENT PRIMARY KEY,
     medical_record_id INT,
     medication_name VARCHAR(255),
-    FOREIGN KEY (medical_record_id) REFERENCES medicalrecord(medical_record_id)
+    FOREIGN KEY (medical_record_id) REFERENCES medicalrecord(medical_record_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Allergy (
     allergy_id INT AUTO_INCREMENT PRIMARY KEY,
     medical_record_id INT,
     allergy_name VARCHAR(255),
-    FOREIGN KEY (medical_record_id) REFERENCES medicalrecord(medical_record_id)
+    FOREIGN KEY (medical_record_id) REFERENCES medicalrecord(medical_record_id) ON DELETE CASCADE
 );
 commit;
 

@@ -1,28 +1,21 @@
 package com.openclassrooms.safetynet.mapper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.openclassrooms.safetynet.DTO.MedicalRecordDTO;
 import com.openclassrooms.safetynet.model.Allergy;
 import com.openclassrooms.safetynet.model.MedicalRecord;
 import com.openclassrooms.safetynet.model.Medication;
-import com.openclassrooms.safetynet.model.Person;
-import com.openclassrooms.safetynet.repository.PersonRepository;
 
 @Component
 public class MedicalRecordMapper {
 
 	private static final Logger logger = LogManager.getLogger("MedicalRecordMapper");
-
-	@Autowired
-	private PersonRepository personRepository;
 
 	public MedicalRecordDTO convertToDTO(MedicalRecord medicalRecord) {
 
@@ -45,43 +38,44 @@ public class MedicalRecordMapper {
 
 	public MedicalRecord convertFromDTO(MedicalRecordDTO medicalRecordDTO) {
 
-		String firstName = medicalRecordDTO.firstName();
-		String lastName = medicalRecordDTO.lastName();
-		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(firstName, lastName);
+		// String firstName = medicalRecordDTO.firstName();
+		// String lastName = medicalRecordDTO.lastName();
+		// Optional<Person> optionalPerson =
+		// personRepository.findByFirstNameAndLastName(firstName, lastName);
 
-		if (optionalPerson.isPresent()) {
+		// if (optionalPerson.isPresent()) {
 
-			// Extraction des informations du patient à partir du DTO
-			MedicalRecord medicalRecord = new MedicalRecord();
-			medicalRecord.setFirstName(medicalRecordDTO.firstName());
-			medicalRecord.setLastName(medicalRecordDTO.lastName());
-			medicalRecord.setName(medicalRecordDTO.firstName() + "," + medicalRecordDTO.lastName());
-			medicalRecord.setBirthDate(medicalRecordDTO.birthDate());
-			medicalRecord.setPerson(optionalPerson.get());
-			// Création de la liste de médicaments à partir des informations du DTO
-			List<Medication> medications = medicalRecordDTO.medications().stream().map(medication -> {
-				Medication convertMedication = new Medication();
-				convertMedication.setMedication(medication);
-				// Set other Medication properties if needed
-				return convertMedication;
-			}).collect(Collectors.toList());
+		// Extraction des informations du patient à partir du DTO
+		MedicalRecord medicalRecord = new MedicalRecord();
+		medicalRecord.setFirstName(medicalRecordDTO.firstName());
+		medicalRecord.setLastName(medicalRecordDTO.lastName());
+		medicalRecord.setName(medicalRecordDTO.firstName() + "," + medicalRecordDTO.lastName());
+		medicalRecord.setBirthDate(medicalRecordDTO.birthDate());
+		medicalRecord.setPerson(null);
+		// Création de la liste de médicaments à partir des informations du DTO
+		List<Medication> medications = medicalRecordDTO.medications().stream().map(medication -> {
+			Medication convertMedication = new Medication();
+			convertMedication.setMedication(medication);
+			// Set other Medication properties if needed
+			return convertMedication;
+		}).collect(Collectors.toList());
 
-			medicalRecord.setMedication(medications);
+		medicalRecord.setMedication(medications);
 
-			// Création de la liste d'allergies à partir des informations du DTO
-			List<Allergy> allergies = medicalRecordDTO.allergies().stream().map(allergyName -> {
-				Allergy allergy = new Allergy();
-				allergy.setAllergyName(allergyName);
-				// Set other Allergy properties if needed
-				return allergy;
-			}).collect(Collectors.toList());
+		// Création de la liste d'allergies à partir des informations du DTO
+		List<Allergy> allergies = medicalRecordDTO.allergies().stream().map(allergyName -> {
+			Allergy allergy = new Allergy();
+			allergy.setAllergyName(allergyName);
+			// Set other Allergy properties if needed
+			return allergy;
+		}).collect(Collectors.toList());
 
-			medicalRecord.setAllergy(allergies);
+		medicalRecord.setAllergy(allergies);
 
-			return medicalRecord;
-		} else {
-			logger.error("no person found to attached the medicalrecord");
-			return null;
-		}
+		return medicalRecord;
+		// } else {
+		// logger.error("no person found to attached the medicalrecord");
+		// return null;
+		// }
 	}
 }
