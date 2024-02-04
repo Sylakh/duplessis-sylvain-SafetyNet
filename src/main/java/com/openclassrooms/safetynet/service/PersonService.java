@@ -1,5 +1,7 @@
 package com.openclassrooms.safetynet.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.openclassrooms.safetynet.DTO.PersonDTO;
 import com.openclassrooms.safetynet.mapper.PersonMapper;
+import com.openclassrooms.safetynet.model.FireStation;
 import com.openclassrooms.safetynet.model.Person;
+import com.openclassrooms.safetynet.repository.FireStationRepository;
 import com.openclassrooms.safetynet.repository.PersonRepository;
 
 import lombok.Data;
@@ -24,12 +28,20 @@ public class PersonService {
 	private PersonRepository personRepository;
 
 	@Autowired
+	private FireStationRepository fireStationRepository;
+
+	@Autowired
 	private PersonMapper personMapper;
 
 	public PersonDTO savePerson(PersonDTO personDTO) {
 		Person person = personMapper.convertPersonFromPersonDTO(personDTO);
+
 		if (person != null) {
+			Optional<FireStation> optionalFireStation = fireStationRepository.findByAddress(person.getAddress());
 			Person savedPerson = personRepository.save(person);
+			if (optionalFireStation.isPresent()) {
+				fireStationRepository.save(optionalFireStation.get());
+			}
 			return personMapper.convertPersonToPersonDTO(savedPerson);
 		} else {
 			return null;
@@ -37,25 +49,6 @@ public class PersonService {
 
 	}
 
-	/**
-	 * public List<PersonDTO> getAllPerson() { List<Person> listPerson =
-	 * personRepository.findAll(); List<PersonDTO> listPersonDTO = new
-	 * ArrayList<>(); for (Person person : listPerson) {
-	 * listPersonDTO.add(personMapper.convertPersonToPersonDTO(person)); } return
-	 * listPersonDTO; }
-	 */
-	/**
-	 * public PersonDTO createPerson(PersonDTO personDTO) {
-	 * 
-	 * Person personToSave = personMapper.convertPersonFromPersonDTO(personDTO);
-	 * Optional<FireStation> optionalFireStation =
-	 * fireStationRepository.findByAddress(personDTO.address()); if
-	 * (optionalFireStation.isPresent()) { logger.info("firestation found");
-	 * FireStation fireStationFound = optionalFireStation.get();
-	 * fireStationFound.addPerson(personToSave); return
-	 * personMapper.convertPersonToPersonDTO(personRepository.save(personToSave)); }
-	 * else { return null; } }
-	 */
 	public void deletePersonByFirstNameAndLastName(String firstName, String lastName) throws Exception {
 
 		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(firstName, lastName);
@@ -80,8 +73,15 @@ public class PersonService {
 			updatedPerson.setZip(person.getZip());
 			updatedPerson.setPhone(person.getPhone());
 			updatedPerson.setEmail(person.getEmail());
-			updatedPerson.setFireStation(person.getFireStation());
+			Optional<FireStation> optionalFireStation = fireStationRepository.findByAddress(person.getAddress());
 			updatedPerson.setMedicalRecord(person.getMedicalRecord());
+			if (optionalFireStation.isPresent()) {
+				FireStation fireStation = optionalFireStation.get();
+				List<Person> persons = new ArrayList<>();
+				persons = personRepository.findAllByAddress(fireStation.getAddress());
+				fireStation.setPersons(persons);
+				fireStationRepository.save(fireStation);
+			}
 			logger.info("update process done");
 			return personMapper.convertPersonToPersonDTO(personRepository.save(updatedPerson));
 		} else {

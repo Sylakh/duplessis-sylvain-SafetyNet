@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.openclassrooms.safetynet.DTO.FireStationDTO;
 import com.openclassrooms.safetynet.mapper.FireStationMapper;
 import com.openclassrooms.safetynet.model.FireStation;
+import com.openclassrooms.safetynet.model.Person;
 import com.openclassrooms.safetynet.repository.FireStationRepository;
+import com.openclassrooms.safetynet.repository.PersonRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.Data;
@@ -28,19 +30,14 @@ public class FireStationService {
 	private FireStationRepository fireStationRepository;
 
 	@Autowired
+	private PersonRepository personRepository;
+
+	@Autowired
 	private FireStationMapper fireStationMapper;
 
 	public FireStation saveMapping(FireStation fireStation) {
 		FireStation savedFireStation = fireStationRepository.save(fireStation);
 		return savedFireStation;
-	}
-
-	public Optional<FireStation> findFireStationOfAnAddress(String address) {
-		return fireStationRepository.findByAddress(address);
-	}
-
-	public List<FireStation> findFireStationofAStation(String station) {
-		return fireStationRepository.findByStation(station);
 	}
 
 	@Transactional
@@ -58,6 +55,9 @@ public class FireStationService {
 	}
 
 	public FireStationDTO createMappingAddressWithStation(FireStation fireStation) {
+		List<Person> persons = new ArrayList<>();
+		persons = personRepository.findAllByAddress(fireStation.getAddress());
+		fireStation.setPersons(persons);
 		return fireStationMapper.convertFireStationToFireStationDTO(fireStationRepository.save(fireStation));
 	}
 

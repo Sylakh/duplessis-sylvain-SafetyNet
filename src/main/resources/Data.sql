@@ -35,7 +35,7 @@ create table person(
     phone VARCHAR(20),
     email VARCHAR(100),
     firestation_address VARCHAR(255)
- /*   ,FOREIGN KEY (firestation_address) REFERENCES firestation(address)*/
+ ,FOREIGN KEY (firestation_address) REFERENCES firestation(address)
 );
 
 insert into person(firstname, lastname, name, address, city, zip, phone, email,firestation_address) values("John", "Boyd", "John,Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com", "1509 Culver St");

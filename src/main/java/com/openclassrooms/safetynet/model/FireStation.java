@@ -7,6 +7,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -23,7 +24,8 @@ public class FireStation {
 	@Column(name = "station")
 	private String station;
 
-	@OneToMany(mappedBy = "fireStation", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = false)
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = false)
+	@JoinColumn(name = "firestation_address")
 	private List<Person> persons = new ArrayList<>();
 
 	public String getAddress() {
@@ -52,7 +54,7 @@ public class FireStation {
 
 	public void addPerson(Person person) {
 		persons.add(person);
-		person.setFireStation(this);
+//		person.setFireStation(this);
 	}
 
 }

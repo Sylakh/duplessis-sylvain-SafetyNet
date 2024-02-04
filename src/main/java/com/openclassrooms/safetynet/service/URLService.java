@@ -15,14 +15,17 @@ import com.openclassrooms.safetynet.DTO.ChildAlertDTO;
 import com.openclassrooms.safetynet.DTO.ChildAlertResponsDTO;
 import com.openclassrooms.safetynet.DTO.FireDTO;
 import com.openclassrooms.safetynet.DTO.FireResponsDTO;
+import com.openclassrooms.safetynet.DTO.FireStationURLDTO;
 import com.openclassrooms.safetynet.DTO.FloodStationPersonDTO;
 import com.openclassrooms.safetynet.DTO.PersonInfoDTO;
 import com.openclassrooms.safetynet.DTO.PersonInfoResponsDTO;
 import com.openclassrooms.safetynet.mapper.ChildAlertMapper;
 import com.openclassrooms.safetynet.mapper.FireDTOMapper;
 import com.openclassrooms.safetynet.mapper.PersonInfoDTOMapper;
+import com.openclassrooms.safetynet.model.Allergy;
 import com.openclassrooms.safetynet.model.FireStation;
 import com.openclassrooms.safetynet.model.MedicalRecord;
+import com.openclassrooms.safetynet.model.Medication;
 import com.openclassrooms.safetynet.model.Person;
 import com.openclassrooms.safetynet.repository.FireStationRepository;
 import com.openclassrooms.safetynet.repository.MedicalRecordRepository;
@@ -176,16 +179,50 @@ public class URLService {
 			List<FloodStationPersonDTO> listFloodStationPersonDTO = new ArrayList<>();
 			listPerson = fireStation.getPersons();
 			for (Person person : listPerson) {
+				List<String> medications = new ArrayList<>();
+				for (Medication medication : person.getMedicalRecord().getMedication()) {
+					medications.add(medication.getMedication());
+				}
+				List<String> allergies = new ArrayList<>();
+				for (Allergy allergy : person.getMedicalRecord().getAllergy()) {
+					allergies.add(allergy.getAllergyName());
+				}
 				listFloodStationPersonDTO
 						.add(new FloodStationPersonDTO(person.getFirstName(), person.getLastName(), person.getPhone(),
 								person.getMedicalRecord().calculateAge(person.getMedicalRecord().getBirthDate()),
-								person.getMedicalRecord().getMedication(), person.getMedicalRecord().getAllergy()));
+								medications, allergies));
+				allergies = null;
+				medications = null;
 			}
 			floodStationsRespons.put(fireStation.getAddress(), listFloodStationPersonDTO);
 			// listFloodStationPersonDTO = null;
 		}
 
 		return floodStationsRespons;
+	}
+
+	public Map<String, List<FireStationURLDTO>> fireStationURL(String station) {
+		logger.info("Request firestation sent for station " + station);
+		List<FireStation> listFireStation = fireStationRepository.findAllByStation(station);
+		List<FireStationURLDTO> listFireStationURLDTO = new ArrayList<>();
+		int countAdult = 0;
+		int countChildren = 0;
+		for (FireStation fireStation : listFireStation) {
+			List<Person> listPerson = fireStation.getPersons();
+			for (Person person : listPerson) {
+				listFireStationURLDTO.add(new FireStationURLDTO(person.getFirstName(), person.getLastName(),
+						person.getAddress(), person.getPhone()));
+				if (person.getMedicalRecord().calculateAge(person.getMedicalRecord().getBirthDate()) > 18) {
+					countAdult += 1;
+				} else {
+					countChildren += 1;
+				}
+			}
+		}
+		Map<String, List<FireStationURLDTO>> map = new HashMap<>();
+		String key = "Adults: " + countAdult + ", Enfants: " + countChildren;
+		map.put(key, listFireStationURLDTO);
+		return map;
 	}
 
 }

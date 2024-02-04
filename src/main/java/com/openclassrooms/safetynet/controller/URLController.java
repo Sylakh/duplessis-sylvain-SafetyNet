@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.safetynet.DTO.ChildAlertResponsDTO;
 import com.openclassrooms.safetynet.DTO.FireResponsDTO;
+import com.openclassrooms.safetynet.DTO.FireStationURLDTO;
 import com.openclassrooms.safetynet.DTO.FloodStationPersonDTO;
 import com.openclassrooms.safetynet.DTO.PersonInfoResponsDTO;
 import com.openclassrooms.safetynet.service.URLService;
@@ -98,5 +99,21 @@ public class URLController {
 	public Map<String, List<FloodStationPersonDTO>> floodStations(@RequestParam String[] stations) {
 		logger.info("Request flood/stations sent ");
 		return uRLService.floodStations(stations);
+	}
+
+	/**
+	 * http://localhost:8080/firestation?stationNumber=<station_number> Cette url
+	 * doit retourner une liste des personnes couvertes par la caserne de pompiers
+	 * correspondante. Donc, si le numéro de station = 1, elle doit renvoyer les
+	 * habitants couverts par la station numéro 1. La liste doit inclure les
+	 * informations spécifiques suivantes : prénom, nom, adresse, numéro de
+	 * téléphone. De plus, elle doit fournir un décompte du nombre d'adultes et du
+	 * nombre d'enfants (tout individu âgé de 18 ans ou moins) dans la zone
+	 * desservie.
+	 */
+	@GetMapping("/firestation")
+	public Map<String, List<FireStationURLDTO>> fireStation(String stationNumber) {
+		logger.info("Request firestation sent for station " + stationNumber);
+		return uRLService.fireStationURL(stationNumber);
 	}
 }
