@@ -42,8 +42,10 @@ public class PersonService {
 			if (optionalFireStation.isPresent()) {
 				fireStationRepository.save(optionalFireStation.get());
 			}
+			logger.info("creation of a new person done");
 			return personMapper.convertPersonToPersonDTO(savedPerson);
 		} else {
+			logger.error("problem of conversion with body request");
 			return null;
 		}
 

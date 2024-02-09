@@ -195,7 +195,6 @@ public class URLService {
 				medications = null;
 			}
 			floodStationsRespons.put(fireStation.getAddress(), listFloodStationPersonDTO);
-			// listFloodStationPersonDTO = null;
 		}
 
 		return floodStationsRespons;

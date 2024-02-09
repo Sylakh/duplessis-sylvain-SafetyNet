@@ -22,7 +22,7 @@ public class MedicalRecordController {
 	private MedicalRecordService medicalRecordService;
 
 	@PostMapping("/medicalrecord")
-	public MedicalRecordDTO createMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) {
+	public MedicalRecordDTO createMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) throws Exception {
 		logger.info("creation process of a new medical records requested");
 		return medicalRecordService.createMedicalRecord(medicalRecordDTO);
 	}
@@ -35,7 +35,7 @@ public class MedicalRecordController {
 	}
 
 	@PutMapping("/medicalrecord")
-	public MedicalRecordDTO updateMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) {
+	public MedicalRecordDTO updateMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) throws Exception {
 		logger.info("update process of a medical records requested");
 		return medicalRecordService.updateMedicalRecord(medicalRecordDTO);
 

@@ -21,4 +21,6 @@ public interface PersonRepository extends CrudRepository<Person, Long> {
 
 	List<Person> findAllByLastName(String lastName);
 
+	void deleteById(Long id);
+
 }

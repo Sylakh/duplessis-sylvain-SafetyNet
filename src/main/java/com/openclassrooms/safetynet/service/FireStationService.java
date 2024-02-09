@@ -35,29 +35,11 @@ public class FireStationService {
 	@Autowired
 	private FireStationMapper fireStationMapper;
 
-	public FireStation saveMapping(FireStation fireStation) {
-		FireStation savedFireStation = fireStationRepository.save(fireStation);
-		return savedFireStation;
-	}
-
-	@Transactional
-	public void deleteByAddress(String address) {
-		fireStationRepository.deleteByAddress(address);
-	}
-
-	public List<FireStation> getAllAddress() {
-		List<FireStation> listFireStation = (List<FireStation>) fireStationRepository.findAll();
-		List<FireStationDTO> listFireStationDTO = new ArrayList<>();
-		for (FireStation fireStation : listFireStation) {
-			listFireStationDTO.add(fireStationMapper.convertFireStationToFireStationDTO(fireStation));
-		}
-		return listFireStation;
-	}
-
 	public FireStationDTO createMappingAddressWithStation(FireStation fireStation) {
 		List<Person> persons = new ArrayList<>();
 		persons = personRepository.findAllByAddress(fireStation.getAddress());
 		fireStation.setPersons(persons);
+		logger.info("creation of a new mapping done");
 		return fireStationMapper.convertFireStationToFireStationDTO(fireStationRepository.save(fireStation));
 	}
 
@@ -96,6 +78,7 @@ public class FireStationService {
 						+ fireStationToDelete.getAddress());
 			}
 		} else {
+			logger.error("FireStation not found");
 			throw new Exception("FireStation not found (Delete)");
 		}
 	}

@@ -38,13 +38,6 @@ public class MedicalRecordMapper {
 
 	public MedicalRecord convertFromDTO(MedicalRecordDTO medicalRecordDTO) {
 
-		// String firstName = medicalRecordDTO.firstName();
-		// String lastName = medicalRecordDTO.lastName();
-		// Optional<Person> optionalPerson =
-		// personRepository.findByFirstNameAndLastName(firstName, lastName);
-
-		// if (optionalPerson.isPresent()) {
-
 		// Extraction des informations du patient à partir du DTO
 		MedicalRecord medicalRecord = new MedicalRecord();
 		medicalRecord.setFirstName(medicalRecordDTO.firstName());
@@ -56,7 +49,6 @@ public class MedicalRecordMapper {
 		List<Medication> medications = medicalRecordDTO.medications().stream().map(medication -> {
 			Medication convertMedication = new Medication();
 			convertMedication.setMedication(medication);
-			// Set other Medication properties if needed
 			return convertMedication;
 		}).collect(Collectors.toList());
 
@@ -73,9 +65,6 @@ public class MedicalRecordMapper {
 		medicalRecord.setAllergy(allergies);
 
 		return medicalRecord;
-		// } else {
-		// logger.error("no person found to attached the medicalrecord");
-		// return null;
-		// }
+
 	}
 }

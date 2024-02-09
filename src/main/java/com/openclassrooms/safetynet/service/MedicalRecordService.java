@@ -47,7 +47,7 @@ public class MedicalRecordService {
 	@Transactional
 	public void deletePatientByFirstNameAndLastName(String firstName, String lastName) throws Exception {
 
-		logger.info("delete patient process by firstname and lastname begins");
+		logger.info("delete medicalRecord process by firstname and lastname begins");
 		Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName,
 				lastName);
 		if (optionalMedicalRecord.isPresent()) {
@@ -56,10 +56,13 @@ public class MedicalRecordService {
 			Long medicalRecord_id = medicalRecordToBeDeleted.getMedicalRecord_id();
 			medicalRecordRepository.deleteById(medicalRecord_id);
 			logger.info("medicalrecord by firstname and lastname deleted");
+		} else {
+			logger.error("MedicalRecord not found");
+			throw new Exception("Medicalrecord not found, no data deleted");
 		}
 	}
 
-	public MedicalRecordDTO createMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
+	public MedicalRecordDTO createMedicalRecord(MedicalRecordDTO medicalRecordDTO) throws Exception {
 		logger.info("creation process of a new medical records begins");
 
 		MedicalRecord medicalRecord = medicalRecordMapper.convertFromDTO(medicalRecordDTO);
@@ -89,12 +92,12 @@ public class MedicalRecordService {
 			return medicalRecordMapper.convertToDTO(savedMedicalRecord);
 		} else {
 			logger.error("creation of medicalRecord impossible, person not present");
-			return null;
+			throw new Exception("Person not found, new data not recorded");
 		}
 	}
 
 	@Transactional
-	public MedicalRecordDTO updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
+	public MedicalRecordDTO updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) throws Exception {
 		logger.info("update process of a medical records begins");
 		MedicalRecord unCompleteMedicalRecord = medicalRecordMapper.convertFromDTO(medicalRecordDTO);
 		String firstName = unCompleteMedicalRecord.getFirstName();
@@ -103,7 +106,6 @@ public class MedicalRecordService {
 		Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName,
 				lastName);
 		Long id;
-
 		if (optionalMedicalRecord.isPresent()) {
 
 			MedicalRecord medicalRecordFound = optionalMedicalRecord.get();
@@ -136,25 +138,14 @@ public class MedicalRecordService {
 			}
 			logger.info("old medication deleted");
 
-			List<Medication> listMedication = unCompleteMedicalRecord.getMedication();
-			for (Medication medication : listMedication) {
-				medication.setMedicalRecord(medicalRecordFound);
-				medicationRepository.save(medication);
-				medicalRecordFound.getMedication().add(medication);
-			}
-
-			List<Allergy> listAllergy = unCompleteMedicalRecord.getAllergy();
-			for (Allergy allergy : listAllergy) {
-				allergy.setMedicalRecord(medicalRecordFound);
-				allergyRepository.save(allergy);
-				medicalRecordFound.getAllergy().add(allergy);
-			}
+			medicalRecordFound.setMedication(unCompleteMedicalRecord.getMedication());
+			medicalRecordFound.setAllergy(unCompleteMedicalRecord.getAllergy());
 			medicalRecordRepository.save(medicalRecordFound);
 			logger.info("update process done");
 			return medicalRecordMapper.convertToDTO(medicalRecordFound);
 		} else {
-			logger.info("update process impossible, medicalrecord not found");
-			return null;
+			logger.error("medicalrecord not found");
+			throw new Exception("MedicalRecord not found, new data not updated");
 		}
 
 	}
