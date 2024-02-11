@@ -3,6 +3,7 @@ package com.openclassrooms.safetynet.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -341,5 +342,103 @@ public class URLServiceTest {
 		assertNotNull(response);
 		assertTrue(response.containsKey("Adults: 1, Enfants: 1"));
 		verify(fireStationRepository).findAllByStation(station);
+	}
+
+	@Test
+	void childAlertNoChildrenTest() {
+		// Given
+		String address = "address";
+		List<Person> personsAtAddress = new ArrayList<>();
+		Person child = new Person();
+		child.setFirstName("John");
+		child.setLastName("Doe");
+		child.setAddress("address");
+		Person adult = new Person();
+		adult.setFirstName("Jane");
+		adult.setLastName("Doe");
+		adult.setAddress("address");
+
+		personsAtAddress.add(child);
+		personsAtAddress.add(adult);
+
+		MedicalRecord childMedicalRecord = new MedicalRecord();
+		childMedicalRecord.setFirstName("John");
+		childMedicalRecord.setLastName("Doe");
+		childMedicalRecord.setBirthDate("01/01/1990");
+		MedicalRecord adultMedicalRecord = new MedicalRecord();
+		adultMedicalRecord.setFirstName("Jane");
+		adultMedicalRecord.setLastName("Doe");
+		adultMedicalRecord.setBirthDate("01/01/1990");
+
+		when(personRepository.findAllByAddress(address)).thenReturn(personsAtAddress);
+		when(medicalRecordRepository.findByFirstNameAndLastName("John", "Doe"))
+				.thenReturn(Optional.of(childMedicalRecord));
+		when(medicalRecordRepository.findByFirstNameAndLastName("Jane", "Doe"))
+				.thenReturn(Optional.of(adultMedicalRecord));
+		when(childAlertMapper.convertPatientToChildAlertDTO(any(MedicalRecord.class))).thenAnswer(invocation -> {
+			MedicalRecord record = invocation.getArgument(0);
+			return new ChildAlertDTO(record.getFirstName(), record.getLastName(),
+					record.calculateAge(record.getBirthDate()));
+		});
+
+		// When
+		ChildAlertResponsDTO response = urlService.childAlert(address);
+
+		// Then
+		assertNull(response);
+
+	}
+
+	@Test
+	void fireNotRegisteredAddressTest() {
+		// Given
+		String address = "123 Maple St";
+		Optional<FireStation> optionalFireStation = Optional.empty();
+
+		List<Person> personsAtAddress = new ArrayList<>();
+		Person person1 = new Person();
+		person1.setFirstName("John");
+		person1.setLastName("Doe");
+		person1.setAddress(address);
+		person1.setPhone("111-222-3333");
+		personsAtAddress.add(person1);
+
+		MedicalRecord medicalRecord1 = new MedicalRecord();
+		medicalRecord1.setFirstName("John");
+		medicalRecord1.setLastName("Doe");
+		medicalRecord1.setBirthDate("01/01/1990");
+
+		List<FireDTO> fireDTOs = new ArrayList<>();
+		FireDTO fireDTO = new FireDTO("John", "Doe", "phone", 30, null, null);
+		fireDTOs.add(fireDTO);
+
+		when(fireStationRepository.findByAddress(address)).thenReturn(optionalFireStation);
+
+		// When
+		FireResponsDTO response = urlService.fire(address);
+
+		// Then
+		assertNull(response);
+
+	}
+
+	@Test
+	void personInfoPersonNotfoundTest() {
+		// Given
+		String firstName = "John", lastName = "Doe";
+		List<Person> persons = new ArrayList<>();
+		Person person = new Person();
+		person.setFirstName("John");
+		person.setLastName("Doe");
+		person.setEmail("email");
+		persons.add(person);
+		when(personRepository.findAllByLastName(lastName)).thenReturn(persons);
+		when(personRepository.findByFirstNameAndLastName(firstName, lastName)).thenReturn(Optional.empty());
+
+		// When
+		PersonInfoResponsDTO result = urlService.personInfo(firstName, lastName);
+
+		// Then
+		assertNull(result);
 	}
 }

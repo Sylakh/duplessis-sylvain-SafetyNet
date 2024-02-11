@@ -29,8 +29,8 @@ public class FireDTOMapperTest {
 	}
 
 	@Test
-	public void testConvertFireStationIntoFireDTO() {
-		// Mock des dépendances
+	public void convertFireStationIntoFireDTOTest() {
+		// Given
 		FireStation fireStation = mock(FireStation.class);
 		Person person = mock(Person.class);
 		MedicalRecord medicalRecord = mock(MedicalRecord.class);
@@ -49,7 +49,6 @@ public class FireDTOMapperTest {
 		allergy2.setAllergyName("allergy2");
 		allergies.add(allergy2);
 
-		// Configuration des mocks
 		when(fireStation.getPersons()).thenReturn(Arrays.asList(person));
 		when(person.getFirstName()).thenReturn("John");
 		when(person.getLastName()).thenReturn("Doe");
@@ -60,10 +59,10 @@ public class FireDTOMapperTest {
 		when(person.getMedicalRecord().getBirthDate()).thenReturn("birthdate");
 		when(person.getMedicalRecord().calculateAge(anyString())).thenReturn(30);
 
-		// Appel de la méthode à tester
+		// When
 		List<FireDTO> result = fireDTOMapper.convertFireStationIntoFireDTO(fireStation);
 
-		// Vérifications
+		// Then
 		assertEquals(1, result.size());
 		FireDTO fireDTO = result.get(0);
 		assertEquals("John", fireDTO.firstName());

@@ -26,8 +26,8 @@ public class MedicalRecordMapperTest {
 	}
 
 	@Test
-	public void testConvertToDTO() {
-		// Préparation de l'objet MedicalRecord
+	public void convertMedicalRecordToDTOTest() {
+		// Given
 		List<Medication> medications = new ArrayList<>();
 		Medication medication1 = new Medication();
 		medication1.setMedication("medication1");
@@ -42,12 +42,7 @@ public class MedicalRecordMapperTest {
 		Allergy allergy2 = new Allergy();
 		allergy2.setAllergyName("allergy2");
 		allergies.add(allergy2);
-		/**
-		 * List<String> listMedication = new ArrayList<>();
-		 * listMedication.add("medication1"); listMedication.add("medication2");
-		 * List<String> listAllergy = new ArrayList<>(); listAllergy.add("allergy1");
-		 * listAllergy.add("allergy2");
-		 */
+
 		MedicalRecord medicalRecord = mock(MedicalRecord.class);
 		when(medicalRecord.getFirstName()).thenReturn("John");
 		when(medicalRecord.getLastName()).thenReturn("Doe");
@@ -55,10 +50,10 @@ public class MedicalRecordMapperTest {
 		when(medicalRecord.getMedication()).thenReturn(medications);
 		when(medicalRecord.getAllergy()).thenReturn(allergies);
 
-		// Exécution de la méthode à tester
+		// When
 		MedicalRecordDTO dto = medicalRecordMapper.convertToDTO(medicalRecord);
 
-		// Vérification des résultats
+		// Then
 		assertEquals("John", dto.firstName());
 		assertEquals("Doe", dto.lastName());
 		assertEquals("01/01/1990", dto.birthDate());
@@ -67,8 +62,8 @@ public class MedicalRecordMapperTest {
 	}
 
 	@Test
-	public void testConvertFromDTO() {
-		// Préparation de l'objet MedicalRecordDTO
+	public void convertMedicalRecordFromDTOTest() {
+		// Given
 		List<String> medications = new ArrayList<>();
 		medications.add("medication1");
 		medications.add("medication2");
@@ -77,10 +72,10 @@ public class MedicalRecordMapperTest {
 		allergies.add("allergy2");
 		MedicalRecordDTO dto = new MedicalRecordDTO("Jane", "Doe", "02/02/1990", medications, allergies);
 
-		// Exécution de la méthode à tester
+		// When
 		MedicalRecord medicalRecord = medicalRecordMapper.convertFromDTO(dto);
 
-		// Vérification des résultats
+		// Then
 		assertEquals("Jane", medicalRecord.getFirstName());
 		assertEquals("Doe", medicalRecord.getLastName());
 		assertEquals("Jane,Doe", medicalRecord.getName());

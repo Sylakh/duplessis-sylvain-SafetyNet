@@ -2,6 +2,7 @@ package com.openclassrooms.safetynet.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -141,5 +142,28 @@ public class FireStationServiceTest {
 		verify(fireStationMapper).convertFireStationToFireStationDTO(fireStation);
 		assertEquals(persons, fireStation.getPersons()); // S'assurer que la liste des personnes est bien associée à la
 															// station
+	}
+
+	@Test
+	public void updateFireStationOfAnAddressNotFoundTest() {
+		// Given
+		FireStation fireStation = new FireStation();
+		fireStation.setAddress("Unknown Address");
+		when(fireStationRepository.findByAddress("Unknown Address")).thenReturn(Optional.empty());
+
+		// When & Then
+		assertThrows(Exception.class, () -> {
+			fireStationService.updateFireStationOfAnAddress(fireStation);
+		});
+	}
+
+	@Test
+	public void deleteAnAddressOrAStationNotFoundTest() {
+		// Given
+		FireStation fireStation = new FireStation(); // Aucune adresse ni station définie
+		// When & Then
+		assertThrows(Exception.class, () -> {
+			fireStationService.deleteAnAddressOrAStation(fireStation);
+		});
 	}
 }

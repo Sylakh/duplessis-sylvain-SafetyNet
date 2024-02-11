@@ -31,7 +31,7 @@ public class MedicalRecordController {
 	public void deletePatientByFirstNameAndLastName(@PathVariable("firstName") String firstName,
 			@PathVariable("lastName") String lastName) throws Exception {
 		logger.info("delete patient process by firstname and lastname requested");
-		medicalRecordService.deletePatientByFirstNameAndLastName(firstName, lastName);
+		medicalRecordService.deleteMedicalRecordByFirstNameAndLastName(firstName, lastName);
 	}
 
 	@PutMapping("/medicalrecord")

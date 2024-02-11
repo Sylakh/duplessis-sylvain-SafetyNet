@@ -98,7 +98,7 @@ public class URLService {
 				MedicalRecord patient = optionalPatient.get();
 				listChildAlertDTO.add(childAlertMapper.convertPatientToChildAlertDTO(patient));
 			} else {
-				logger.error(
+				logger.info(
 						"the person " + person.getFirstName() + " " + person.getLastName() + "has no medical records.");
 			}
 		}
@@ -131,6 +131,7 @@ public class URLService {
 					"l'adresse " + address + " est couverte par la caserne " + fireStationFound.getStation() + " .",
 					listPersons);
 		} else {
+			logger.info("This address is not registered");
 			return null;
 		}
 

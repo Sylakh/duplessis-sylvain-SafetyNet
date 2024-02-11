@@ -16,6 +16,7 @@ import com.openclassrooms.safetynet.model.Person;
 import com.openclassrooms.safetynet.repository.FireStationRepository;
 import com.openclassrooms.safetynet.repository.PersonRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.Data;
 
 @Data
@@ -40,7 +41,12 @@ public class PersonService {
 			Optional<FireStation> optionalFireStation = fireStationRepository.findByAddress(person.getAddress());
 			Person savedPerson = personRepository.save(person);
 			if (optionalFireStation.isPresent()) {
-				fireStationRepository.save(optionalFireStation.get());
+				FireStation fireStation = optionalFireStation.get();
+				List<Person> persons = new ArrayList<>();
+				persons = personRepository.findAllByAddress(fireStation.getAddress());
+				fireStation.setPersons(persons);
+				persons.add(savedPerson);
+				fireStationRepository.save(fireStation);
 			}
 			logger.info("creation of a new person done");
 			return personMapper.convertPersonToPersonDTO(savedPerson);
@@ -64,6 +70,7 @@ public class PersonService {
 		}
 	}
 
+	@Transactional
 	public PersonDTO updatePersonByFirstNameAndLastName(PersonDTO personDTO) throws Exception {
 		Person person = personMapper.convertPersonFromPersonDTO(personDTO);
 		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(person.getFirstName(),
@@ -75,14 +82,17 @@ public class PersonService {
 			updatedPerson.setZip(person.getZip());
 			updatedPerson.setPhone(person.getPhone());
 			updatedPerson.setEmail(person.getEmail());
-			Optional<FireStation> optionalFireStation = fireStationRepository.findByAddress(person.getAddress());
+			Optional<FireStation> optionalFireStation = fireStationRepository.findByAddress(updatedPerson.getAddress());
 			updatedPerson.setMedicalRecord(person.getMedicalRecord());
 			if (optionalFireStation.isPresent()) {
 				FireStation fireStation = optionalFireStation.get();
 				List<Person> persons = new ArrayList<>();
 				persons = personRepository.findAllByAddress(fireStation.getAddress());
+				persons.add(updatedPerson);
 				fireStation.setPersons(persons);
 				fireStationRepository.save(fireStation);
+			} else {
+				personRepository.updateFireStationReferenceNull(updatedPerson.getId());
 			}
 			logger.info("update process done");
 			return personMapper.convertPersonToPersonDTO(personRepository.save(updatedPerson));

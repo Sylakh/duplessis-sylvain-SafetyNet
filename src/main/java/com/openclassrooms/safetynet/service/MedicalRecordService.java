@@ -45,7 +45,7 @@ public class MedicalRecordService {
 	private PersonRepository personRepository;
 
 	@Transactional
-	public void deletePatientByFirstNameAndLastName(String firstName, String lastName) throws Exception {
+	public void deleteMedicalRecordByFirstNameAndLastName(String firstName, String lastName) throws Exception {
 
 		logger.info("delete medicalRecord process by firstname and lastname begins");
 		Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName,
@@ -105,41 +105,47 @@ public class MedicalRecordService {
 		String birthDate = unCompleteMedicalRecord.getBirthDate();
 		Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName,
 				lastName);
-		Long id;
-		if (optionalMedicalRecord.isPresent()) {
 
+		if (optionalMedicalRecord.isPresent()) {
 			MedicalRecord medicalRecordFound = optionalMedicalRecord.get();
 			logger.info("medicalrecord to update found");
 			logger.info("medicalrecordfound id:" + medicalRecordFound.getMedicalRecord_id());
 			medicalRecordFound.setBirthDate(birthDate);
-			// medicalRecordFound.setPerson(unCompleteMedicalRecord.getPerson());
 
-			// delete old Allergy
-			List<Allergy> listAllergyToBeDeleted = new ArrayList<>();
-			listAllergyToBeDeleted = allergyRepository.findAllByMedicalRecord(medicalRecordFound);
-
-			for (Allergy allergy : listAllergyToBeDeleted) {
+			// Directly delete old Allergies and Medications
+			List<Allergy> allergiesToDelete = allergyRepository.findAllByMedicalRecord(medicalRecordFound);
+			allergiesToDelete.forEach(allergy -> {
 				logger.info("allergy to be deleted id:" + allergy.getId());
-				id = allergy.getId();
-				medicalRecordFound.getAllergy().remove(allergy);
 				allergyRepository.deleteById(allergy.getId());
-			}
+			});
 			logger.info("old Allergy deleted");
 
-			// delete old Medication
-			List<Medication> listMedicationToBeDeleted = new ArrayList<>();
-			listMedicationToBeDeleted = medicationRepository.findAllByMedicalRecord(medicalRecordFound);
-
-			for (Medication medication : listMedicationToBeDeleted) {
+			List<Medication> medicationsToDelete = medicationRepository.findAllByMedicalRecord(medicalRecordFound);
+			medicationsToDelete.forEach(medication -> {
 				logger.info("medication to be deleted id:" + medication.getId());
-				id = medication.getId();
-				medicalRecordFound.getMedication().remove(medication);
 				medicationRepository.deleteById(medication.getId());
-			}
+			});
 			logger.info("old medication deleted");
 
+			// Set new Allergies and Medications
+
+			List<Medication> savedListMedication = new ArrayList<>();
+			for (Medication medication : unCompleteMedicalRecord.getMedication()) {
+				medication.setMedicalRecord(medicalRecordFound);
+				savedListMedication.add(medicationRepository.save(medication));
+			}
+
+			List<Allergy> savedListAllergy = new ArrayList<>();
+			for (Allergy allergy : unCompleteMedicalRecord.getAllergy()) {
+				allergy.setMedicalRecord(medicalRecordFound);
+				savedListAllergy.add(allergyRepository.save(allergy));
+			}
+
+			medicalRecordRepository.save(medicalRecordFound);
 			medicalRecordFound.setMedication(unCompleteMedicalRecord.getMedication());
 			medicalRecordFound.setAllergy(unCompleteMedicalRecord.getAllergy());
+
+			// Save updated MedicalRecord
 			medicalRecordRepository.save(medicalRecordFound);
 			logger.info("update process done");
 			return medicalRecordMapper.convertToDTO(medicalRecordFound);
@@ -147,7 +153,5 @@ public class MedicalRecordService {
 			logger.error("medicalrecord not found");
 			throw new Exception("MedicalRecord not found, new data not updated");
 		}
-
 	}
-
 }

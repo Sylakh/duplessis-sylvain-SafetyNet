@@ -22,11 +22,6 @@ public class Person {
 	@Column(name = "id")
 	private Long id;
 
-	/**
-	 * @ManyToOne(fetch = FetchType.LAZY)
-	 * @JsonBackReference // @JoinColumn(name = "firestation_address") private
-	 *                    FireStation fireStation;
-	 */
 	@Column(name = "firstname")
 	private String firstName;
 
@@ -51,9 +46,8 @@ public class Person {
 	@Column(name = "email")
 	private String email;
 
-	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = false)
+	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
-
 	private MedicalRecord medicalRecord;
 
 	public MedicalRecord getMedicalRecord() {

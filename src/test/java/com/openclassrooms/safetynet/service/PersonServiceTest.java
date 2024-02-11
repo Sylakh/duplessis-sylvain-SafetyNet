@@ -137,7 +137,6 @@ public class PersonServiceTest {
 		Exception exception = assertThrows(Exception.class, () -> {
 			personService.updatePersonByFirstNameAndLastName(personDTO);
 		});
-
 		assertEquals("Person not found, new data not recorded", exception.getMessage());
 		verify(personRepository, times(1)).findByFirstNameAndLastName("Jane", "Doe");
 		verify(personRepository, never()).save(any(Person.class));

@@ -27,8 +27,8 @@ public class PersonInfoDTOMapperTest {
 	}
 
 	@Test
-	public void testConvertPersonToPersonInfoDTO() {
-		// Mock des objets nécessaires
+	public void convertPersonToPersonInfoDTOTest() {
+		// Given
 		Person person = mock(Person.class);
 		MedicalRecord medicalRecord = mock(MedicalRecord.class);
 		List<Medication> medications = new ArrayList<>();
@@ -46,7 +46,6 @@ public class PersonInfoDTOMapperTest {
 		allergy2.setAllergyName("allergy2");
 		allergies.add(allergy2);
 
-		// Configuration du comportement des mocks
 		when(person.getFirstName()).thenReturn("Jane");
 		when(person.getLastName()).thenReturn("Doe");
 		when(person.getAddress()).thenReturn("address");
@@ -57,10 +56,10 @@ public class PersonInfoDTOMapperTest {
 		when(person.getMedicalRecord().getBirthDate()).thenReturn("birthdate");
 		when(medicalRecord.calculateAge(anyString())).thenReturn(40);
 
-		// Appel de la méthode à tester
+		// When
 		PersonInfoDTO personInfoDTO = personInfoDTOMapper.convertPersonToPersonInfoDTO(person);
 
-		// Vérifications des résultats
+		// Then
 		assertEquals("Jane", personInfoDTO.firstName());
 		assertEquals("Doe", personInfoDTO.lastName());
 		assertEquals("address", personInfoDTO.address());
