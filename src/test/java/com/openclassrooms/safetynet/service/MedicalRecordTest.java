@@ -71,10 +71,10 @@ public class MedicalRecordTest {
 				.thenReturn(Optional.of(medicalRecord));
 
 		// When
-		medicalRecordService.deleteMedicalRecordByFirstNameAndLastName(firstName, lastName);
+		medicalRecordService.deleteMedicalRecord(firstName, lastName);
 
 		// Then
-		verify(medicalRecordRepository).deleteById(medicalRecord.getMedicalRecord_id());
+		verify(medicalRecordRepository).deleteById(medicalRecord.getMedicalRecordId());
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class MedicalRecordTest {
 
 		// When & Then
 		Exception exception = assertThrows(Exception.class,
-				() -> medicalRecordService.deleteMedicalRecordByFirstNameAndLastName(firstName, lastName));
+				() -> medicalRecordService.deleteMedicalRecord(firstName, lastName));
 		assertEquals("Medicalrecord not found, no data deleted", exception.getMessage());
 	}
 
@@ -188,8 +188,8 @@ public class MedicalRecordTest {
 		medication.setMedication("medication");
 		allergies.add(allergy);
 		medications.add(medication);
-		medicalRecord.setMedication(medications);
-		medicalRecord.setAllergy(allergies);
+		medicalRecord.setMedications(medications);
+		medicalRecord.setAllergies(allergies);
 
 		when(medicalRecordMapper.convertFromDTO(medicalRecordDTO)).thenReturn(medicalRecord);
 		when(personRepository.findByFirstNameAndLastName("John", "Doe")).thenReturn(Optional.of(person));
@@ -211,7 +211,7 @@ public class MedicalRecordTest {
 		MedicalRecord medicalRecord = new MedicalRecord();
 		medicalRecord.setFirstName("John");
 		medicalRecord.setLastName("Doe");
-		medicalRecord.setMedicalRecord_id((long) 1);
+		medicalRecord.setMedicalRecordId((long) 1);
 
 		List<Medication> medications = new ArrayList<>();
 		List<Allergy> allergies = new ArrayList<>();
@@ -223,12 +223,12 @@ public class MedicalRecordTest {
 		medication.setId((long) 1);
 		allergies.add(allergy);
 		medications.add(medication);
-		medicalRecord.setMedication(medications);
-		medicalRecord.setAllergy(allergies);
+		medicalRecord.setMedications(medications);
+		medicalRecord.setAllergies(allergies);
 
 		MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO("John", "Doe", "birthDate", null, null);
-		medicalRecord.setMedication(medications);
-		medicalRecord.setAllergy(allergies);
+		medicalRecord.setMedications(medications);
+		medicalRecord.setAllergies(allergies);
 
 		when(medicalRecordMapper.convertFromDTO(medicalRecordDTO)).thenReturn(medicalRecord);
 		when(allergyRepository.findAllByMedicalRecord(medicalRecord)).thenReturn(allergies);

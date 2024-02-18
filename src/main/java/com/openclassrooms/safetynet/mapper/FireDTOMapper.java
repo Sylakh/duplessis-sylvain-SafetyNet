@@ -23,14 +23,14 @@ public class FireDTOMapper {
 		for (Person person : fireStation.getPersons()) {
 			medications = "";
 			allergies = "";
-			for (Medication medication : person.getMedicalRecord().getMedication()) {
+			for (Medication medication : person.getMedicalRecord().getMedications()) {
 				if (medications == "") {
 					medications = medication.getMedication();
 				} else {
 					medications = medications + ", " + medication.getMedication();
 				}
 			}
-			for (Allergy allergy : person.getMedicalRecord().getAllergy()) {
+			for (Allergy allergy : person.getMedicalRecord().getAllergies()) {
 				if (allergies == "") {
 					allergies = allergy.getAllergyName();
 				} else {

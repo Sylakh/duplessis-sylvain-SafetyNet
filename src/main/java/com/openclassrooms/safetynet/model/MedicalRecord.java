@@ -36,7 +36,7 @@ public class MedicalRecord {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "medical_record_id")
-	private Long medicalRecord_id;
+	private Long medicalRecordId;
 
 	@Column(name = "firstname")
 	private String firstName;
@@ -52,11 +52,11 @@ public class MedicalRecord {
 
 	@OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, orphanRemoval = false)
 	@JsonManagedReference
-	List<Medication> medication = new ArrayList<>();
+	List<Medication> medications = new ArrayList<>();
 
 	@OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, orphanRemoval = false)
 	@JsonManagedReference
-	List<Allergy> allergy = new ArrayList<>();
+	List<Allergy> allergies = new ArrayList<>();
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "person_id")
@@ -71,28 +71,28 @@ public class MedicalRecord {
 		this.name = name;
 	}
 
-	public List<Medication> getMedication() {
-		return medication;
+	public List<Medication> getMedications() {
+		return medications;
 	}
 
-	public void setMedication(List<Medication> medication) {
-		this.medication = medication;
+	public void setMedications(List<Medication> medications) {
+		this.medications = medications;
 	}
 
-	public List<Allergy> getAllergy() {
-		return allergy;
+	public List<Allergy> getAllergies() {
+		return allergies;
 	}
 
-	public void setAllergy(List<Allergy> allergy) {
-		this.allergy = allergy;
+	public void setAllergies(List<Allergy> allergies) {
+		this.allergies = allergies;
 	}
 
-	public Long getMedicalRecord_id() {
-		return medicalRecord_id;
+	public Long getMedicalRecordId() {
+		return medicalRecordId;
 	}
 
-	public void setMedicalRecord_id(Long medicalRecord_id) {
-		this.medicalRecord_id = medicalRecord_id;
+	public void setMedicalRecordId(Long medicalRecordId) {
+		this.medicalRecordId = medicalRecordId;
 	}
 
 	public String getFirstName() {
@@ -140,31 +140,41 @@ public class MedicalRecord {
 		} catch (ParseException e) {
 			// Gérer l'exception si la conversion échoue
 			logger.error("Conversion String to Date failed", e);
-			;
-			return null;
+			throw new IllegalArgumentException("Date: " + dateString + " should be of the format : MM/dd/yyyy");
 		}
 	}
 
 	public int calculateAge(String birthDate) {
+		/**
+		 * Date dateOfBirth = convertStringToDate(birthDate);
+		 * 
+		 * if (dateOfBirth != null) { Calendar birthDateCal = Calendar.getInstance();
+		 * birthDateCal.setTime(dateOfBirth);
+		 * 
+		 * Calendar nowCal = Calendar.getInstance();
+		 * 
+		 * int age = nowCal.get(Calendar.YEAR) - birthDateCal.get(Calendar.YEAR);
+		 * 
+		 * // Vérifier si l'anniversaire n'a pas encore eu lieu cette année if
+		 * (nowCal.get(Calendar.DAY_OF_YEAR) < birthDateCal.get(Calendar.DAY_OF_YEAR)) {
+		 * age--; }
+		 * 
+		 * return age; } else { logger.error("the calcul of Age failed!"); return -1; }
+		 */
 		Date dateOfBirth = convertStringToDate(birthDate);
+		Calendar birthDateCal = Calendar.getInstance();
+		birthDateCal.setTime(dateOfBirth);
 
-		if (dateOfBirth != null) {
-			Calendar birthDateCal = Calendar.getInstance();
-			birthDateCal.setTime(dateOfBirth);
+		Calendar nowCal = Calendar.getInstance();
 
-			Calendar nowCal = Calendar.getInstance();
+		int age = nowCal.get(Calendar.YEAR) - birthDateCal.get(Calendar.YEAR);
 
-			int age = nowCal.get(Calendar.YEAR) - birthDateCal.get(Calendar.YEAR);
-
-			// Vérifier si l'anniversaire n'a pas encore eu lieu cette année
-			if (nowCal.get(Calendar.DAY_OF_YEAR) < birthDateCal.get(Calendar.DAY_OF_YEAR)) {
-				age--;
-			}
-
-			return age;
-		} else {
-			logger.error("the calcul of Age failed!");
-			return -1;
+		// Vérifier si l'anniversaire n'a pas encore eu lieu cette année
+		if (nowCal.get(Calendar.DAY_OF_YEAR) < birthDateCal.get(Calendar.DAY_OF_YEAR)) {
+			age--;
 		}
+
+		return age;
+
 	}
 }

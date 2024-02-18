@@ -52,9 +52,4 @@ public class FireStation {
 		this.persons = persons;
 	}
 
-	public void addPerson(Person person) {
-		persons.add(person);
-//		person.setFireStation(this);
-	}
-
 }

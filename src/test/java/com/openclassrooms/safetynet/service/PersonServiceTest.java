@@ -66,7 +66,7 @@ public class PersonServiceTest {
 		when(personMapper.convertPersonToPersonDTO(any(Person.class))).thenReturn(personDTO);
 
 		// when
-		PersonDTO savedPersonDTO = personService.savePerson(personDTO);
+		PersonDTO savedPersonDTO = personService.createPerson(personDTO);
 
 		// then
 		assertNotNull(savedPersonDTO);
@@ -85,7 +85,7 @@ public class PersonServiceTest {
 		person.setAddress("address");
 		when(personRepository.findByFirstNameAndLastName(anyString(), anyString())).thenReturn(Optional.of(person));
 		// when
-		personService.deletePersonByFirstNameAndLastName("John", "Doe");
+		personService.deletePerson("John", "Doe");
 		// then
 		verify(personRepository).deleteById(any(Long.class));
 	}
@@ -95,7 +95,7 @@ public class PersonServiceTest {
 		// given
 		when(personRepository.findByFirstNameAndLastName(anyString(), anyString())).thenReturn(Optional.empty());
 		// when & Then
-		assertThrows(Exception.class, () -> personService.deletePersonByFirstNameAndLastName("Nonexistent", "Person"));
+		assertThrows(Exception.class, () -> personService.deletePerson("Nonexistent", "Person"));
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class PersonServiceTest {
 		when(fireStationRepository.findByAddress(anyString())).thenReturn(Optional.of(fireStation));
 		when(personMapper.convertPersonToPersonDTO(any(Person.class))).thenReturn(personDTO);
 		// when
-		PersonDTO updatedPersonDTO = personService.updatePersonByFirstNameAndLastName(personDTO);
+		PersonDTO updatedPersonDTO = personService.updatePerson(personDTO);
 		// Then
 		assertNotNull(updatedPersonDTO);
 		verify(personRepository).save(person);
@@ -135,7 +135,7 @@ public class PersonServiceTest {
 
 		// When & Then
 		Exception exception = assertThrows(Exception.class, () -> {
-			personService.updatePersonByFirstNameAndLastName(personDTO);
+			personService.updatePerson(personDTO);
 		});
 		assertEquals("Person not found, new data not recorded", exception.getMessage());
 		verify(personRepository, times(1)).findByFirstNameAndLastName("Jane", "Doe");

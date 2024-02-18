@@ -14,20 +14,21 @@ public class PersonInfoDTOMapper {
 
 		String medications = "";
 		String allergies = "";
-		for (Medication medication : person.getMedicalRecord().getMedication()) {
+		for (Medication medication : person.getMedicalRecord().getMedications()) {
 			if (medications == "") {
 				medications = medication.getMedication();
 			} else {
 				medications = medications + ", " + medication.getMedication();
 			}
 		}
-		for (Allergy allergy : person.getMedicalRecord().getAllergy()) {
+		for (Allergy allergy : person.getMedicalRecord().getAllergies()) {
 			if (allergies == "") {
 				allergies = allergy.getAllergyName();
 			} else {
 				allergies = allergies + ", " + allergy.getAllergyName();
 			}
 		}
+
 		int age = person.getMedicalRecord().calculateAge(person.getMedicalRecord().getBirthDate());
 		return new PersonInfoDTO(person.getFirstName(), person.getLastName(), person.getAddress(), person.getCity(),
 				age, medications, allergies);

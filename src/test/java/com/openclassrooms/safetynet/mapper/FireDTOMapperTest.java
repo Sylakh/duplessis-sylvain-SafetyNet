@@ -54,8 +54,8 @@ public class FireDTOMapperTest {
 		when(person.getLastName()).thenReturn("Doe");
 		when(person.getPhone()).thenReturn("123456789");
 		when(person.getMedicalRecord()).thenReturn(medicalRecord);
-		when(medicalRecord.getMedication()).thenReturn(medications);
-		when(medicalRecord.getAllergy()).thenReturn(allergies);
+		when(medicalRecord.getMedications()).thenReturn(medications);
+		when(medicalRecord.getAllergies()).thenReturn(allergies);
 		when(person.getMedicalRecord().getBirthDate()).thenReturn("birthdate");
 		when(person.getMedicalRecord().calculateAge(anyString())).thenReturn(30);
 

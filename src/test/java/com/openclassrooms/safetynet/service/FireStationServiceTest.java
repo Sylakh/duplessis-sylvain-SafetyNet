@@ -60,7 +60,7 @@ public class FireStationServiceTest {
 		when(fireStationRepository.save(any(FireStation.class))).thenReturn(fireStation);
 		when(fireStationMapper.convertFireStationToFireStationDTO(any(FireStation.class))).thenReturn(fireStationDTO);
 		// When
-		FireStationDTO result = fireStationService.createMappingAddressWithStation(fireStation);
+		FireStationDTO result = fireStationService.createMapping(fireStation);
 		// Then
 		assertNotNull(result);
 		verify(personRepository).findAllByAddress("Test Address");
@@ -82,7 +82,7 @@ public class FireStationServiceTest {
 		when(fireStationRepository.save(any(FireStation.class))).thenReturn(fireStation);
 		when(fireStationMapper.convertFireStationToFireStationDTO(any(FireStation.class))).thenReturn(fireStationDTO);
 		// When
-		FireStationDTO result = fireStationService.updateFireStationOfAnAddress(fireStation);
+		FireStationDTO result = fireStationService.updateFireStation(fireStation);
 		// Then
 		assertNotNull(result);
 		verify(fireStationRepository).findByAddress("Test Address");
@@ -100,7 +100,7 @@ public class FireStationServiceTest {
 		when(fireStationRepository.findByAddress(anyString())).thenReturn(optionalFireStation);
 		doNothing().when(fireStationRepository).deleteByAddress(anyString());
 		// When
-		fireStationService.deleteAnAddressOrAStation(fireStation);
+		fireStationService.deleteFireStation(fireStation.getAddress(), fireStation.getStation());
 		// Then
 		verify(fireStationRepository).findByAddress("Test Address");
 		verify(fireStationRepository).deleteByAddress("Test Address");
@@ -117,7 +117,7 @@ public class FireStationServiceTest {
 		when(fireStationRepository.findByStation(anyString())).thenReturn(fireStations);
 		doNothing().when(fireStationRepository).deleteByAddress(anyString());
 		// When
-		fireStationService.deleteAnAddressOrAStation(fireStation);
+		fireStationService.deleteFireStation(fireStation.getAddress(), fireStation.getStation());
 		// Then
 		verify(fireStationRepository).findByStation("Test Station");
 	}
@@ -134,7 +134,7 @@ public class FireStationServiceTest {
 		when(fireStationRepository.save(fireStation)).thenReturn(fireStation);
 		when(fireStationMapper.convertFireStationToFireStationDTO(fireStation)).thenReturn(fireStationDTO);
 		// When
-		FireStationDTO result = fireStationService.createMappingAddressWithStation(fireStation);
+		FireStationDTO result = fireStationService.createMapping(fireStation);
 		// Then
 		assertNotNull(result);
 		verify(personRepository).findAllByAddress("Test Address");
@@ -153,7 +153,7 @@ public class FireStationServiceTest {
 
 		// When & Then
 		assertThrows(Exception.class, () -> {
-			fireStationService.updateFireStationOfAnAddress(fireStation);
+			fireStationService.updateFireStation(fireStation);
 		});
 	}
 
@@ -163,7 +163,7 @@ public class FireStationServiceTest {
 		FireStation fireStation = new FireStation(); // Aucune adresse ni station définie
 		// When & Then
 		assertThrows(Exception.class, () -> {
-			fireStationService.deleteAnAddressOrAStation(fireStation);
+			fireStationService.deleteFireStation(fireStation.getAddress(), fireStation.getStation());
 		});
 	}
 }

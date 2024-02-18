@@ -35,7 +35,8 @@ public class FireStationService {
 	@Autowired
 	private FireStationMapper fireStationMapper;
 
-	public FireStationDTO createMappingAddressWithStation(FireStation fireStation) {
+	@Transactional
+	public FireStationDTO createMapping(FireStation fireStation) {
 		List<Person> persons = new ArrayList<>();
 		persons = personRepository.findAllByAddress(fireStation.getAddress());
 		fireStation.setPersons(persons);
@@ -43,7 +44,8 @@ public class FireStationService {
 		return fireStationMapper.convertFireStationToFireStationDTO(fireStationRepository.save(fireStation));
 	}
 
-	public FireStationDTO updateFireStationOfAnAddress(@RequestBody FireStation fireStation) throws Exception {
+	@Transactional
+	public FireStationDTO updateFireStation(@RequestBody FireStation fireStation) throws Exception {
 		logger.info("update process of the station of a specific address begins");
 		Optional<FireStation> optionalFireStation = fireStationRepository.findByAddress(fireStation.getAddress());
 		if (optionalFireStation.isPresent()) {
@@ -58,20 +60,18 @@ public class FireStationService {
 	}
 
 	@Transactional
-	public void deleteAnAddressOrAStation(FireStation fireStation) throws Exception {
-		if (fireStation.getAddress() != null) {
+	public void deleteFireStation(String address, String station) throws Exception {
+		if (address != "") {
 			logger.info("delete process begins from an address");
-			Optional<FireStation> optionalFireStationFromAddress = fireStationRepository
-					.findByAddress(fireStation.getAddress());
+			Optional<FireStation> optionalFireStationFromAddress = fireStationRepository.findByAddress(address);
 			if (optionalFireStationFromAddress.isPresent()) {
 				FireStation fireStationFound = optionalFireStationFromAddress.get();
 				fireStationRepository.deleteByAddress(fireStationFound.getAddress());
-				logger.info("delete process done for address:" + fireStation.getAddress());
+				logger.info("delete process done for address:" + address);
 			}
-		} else if (fireStation.getStation() != null && fireStation.getAddress() == null) {
+		} else if (station != "" && address == "") {
 			logger.info("delete process begins from an address");
-			Iterable<FireStation> iterableFireStationFromStation = fireStationRepository
-					.findByStation(fireStation.getStation());
+			Iterable<FireStation> iterableFireStationFromStation = fireStationRepository.findByStation(station);
 			for (FireStation fireStationToDelete : iterableFireStationFromStation) {
 				fireStationRepository.deleteByAddress(fireStationToDelete.getAddress());
 				logger.info("delete process done for station" + fireStationToDelete.getStation() + " at address: "

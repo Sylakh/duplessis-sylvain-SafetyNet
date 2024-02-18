@@ -45,7 +45,7 @@ public class MedicalRecordService {
 	private PersonRepository personRepository;
 
 	@Transactional
-	public void deleteMedicalRecordByFirstNameAndLastName(String firstName, String lastName) throws Exception {
+	public void deleteMedicalRecord(String firstName, String lastName) throws Exception {
 
 		logger.info("delete medicalRecord process by firstname and lastname begins");
 		Optional<MedicalRecord> optionalMedicalRecord = medicalRecordRepository.findByFirstNameAndLastName(firstName,
@@ -53,7 +53,7 @@ public class MedicalRecordService {
 		if (optionalMedicalRecord.isPresent()) {
 			logger.info("medical record by firstname and lastname found");
 			MedicalRecord medicalRecordToBeDeleted = optionalMedicalRecord.get();
-			Long medicalRecord_id = medicalRecordToBeDeleted.getMedicalRecord_id();
+			Long medicalRecord_id = medicalRecordToBeDeleted.getMedicalRecordId();
 			medicalRecordRepository.deleteById(medicalRecord_id);
 			logger.info("medicalrecord by firstname and lastname deleted");
 		} else {
@@ -62,6 +62,7 @@ public class MedicalRecordService {
 		}
 	}
 
+	@Transactional
 	public MedicalRecordDTO createMedicalRecord(MedicalRecordDTO medicalRecordDTO) throws Exception {
 		logger.info("creation process of a new medical records begins");
 
@@ -74,14 +75,14 @@ public class MedicalRecordService {
 			medicalRecord.setPerson(personFound);
 			MedicalRecord savedMedicalRecord = medicalRecordRepository.save(medicalRecord);
 
-			List<Medication> listMedication = medicalRecord.getMedication();
+			List<Medication> listMedication = medicalRecord.getMedications();
 			List<Medication> savedListMedication = new ArrayList<>();
 			for (Medication medication : listMedication) {
 				medication.setMedicalRecord(medicalRecord);
 				savedListMedication.add(medicationRepository.save(medication));
 			}
 
-			List<Allergy> listAllergy = medicalRecord.getAllergy();
+			List<Allergy> listAllergy = medicalRecord.getAllergies();
 			List<Allergy> savedListAllergy = new ArrayList<>();
 			for (Allergy allergy : listAllergy) {
 				allergy.setMedicalRecord(medicalRecord);
@@ -109,7 +110,7 @@ public class MedicalRecordService {
 		if (optionalMedicalRecord.isPresent()) {
 			MedicalRecord medicalRecordFound = optionalMedicalRecord.get();
 			logger.info("medicalrecord to update found");
-			logger.info("medicalrecordfound id:" + medicalRecordFound.getMedicalRecord_id());
+			logger.info("medicalrecordfound id:" + medicalRecordFound.getMedicalRecordId());
 			medicalRecordFound.setBirthDate(birthDate);
 
 			// Directly delete old Allergies and Medications
@@ -130,20 +131,20 @@ public class MedicalRecordService {
 			// Set new Allergies and Medications
 
 			List<Medication> savedListMedication = new ArrayList<>();
-			for (Medication medication : unCompleteMedicalRecord.getMedication()) {
+			for (Medication medication : unCompleteMedicalRecord.getMedications()) {
 				medication.setMedicalRecord(medicalRecordFound);
 				savedListMedication.add(medicationRepository.save(medication));
 			}
 
 			List<Allergy> savedListAllergy = new ArrayList<>();
-			for (Allergy allergy : unCompleteMedicalRecord.getAllergy()) {
+			for (Allergy allergy : unCompleteMedicalRecord.getAllergies()) {
 				allergy.setMedicalRecord(medicalRecordFound);
 				savedListAllergy.add(allergyRepository.save(allergy));
 			}
 
 			medicalRecordRepository.save(medicalRecordFound);
-			medicalRecordFound.setMedication(unCompleteMedicalRecord.getMedication());
-			medicalRecordFound.setAllergy(unCompleteMedicalRecord.getAllergy());
+			medicalRecordFound.setMedications(unCompleteMedicalRecord.getMedications());
+			medicalRecordFound.setAllergies(unCompleteMedicalRecord.getAllergies());
 
 			// Save updated MedicalRecord
 			medicalRecordRepository.save(medicalRecordFound);

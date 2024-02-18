@@ -51,8 +51,8 @@ public class PersonInfoDTOMapperTest {
 		when(person.getAddress()).thenReturn("address");
 		when(person.getCity()).thenReturn("city");
 		when(person.getMedicalRecord()).thenReturn(medicalRecord);
-		when(medicalRecord.getMedication()).thenReturn(medications);
-		when(medicalRecord.getAllergy()).thenReturn(allergies);
+		when(medicalRecord.getMedications()).thenReturn(medications);
+		when(medicalRecord.getAllergies()).thenReturn(allergies);
 		when(person.getMedicalRecord().getBirthDate()).thenReturn("birthdate");
 		when(medicalRecord.calculateAge(anyString())).thenReturn(40);
 

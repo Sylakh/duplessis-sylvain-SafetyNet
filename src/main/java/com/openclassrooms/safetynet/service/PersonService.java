@@ -34,7 +34,8 @@ public class PersonService {
 	@Autowired
 	private PersonMapper personMapper;
 
-	public PersonDTO savePerson(PersonDTO personDTO) {
+	@Transactional
+	public PersonDTO createPerson(PersonDTO personDTO) {
 		Person person = personMapper.convertPersonFromPersonDTO(personDTO);
 
 		if (person != null) {
@@ -57,7 +58,8 @@ public class PersonService {
 
 	}
 
-	public void deletePersonByFirstNameAndLastName(String firstName, String lastName) throws Exception {
+	@Transactional
+	public void deletePerson(String firstName, String lastName) throws Exception {
 
 		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(firstName, lastName);
 		if (optionalPerson.isPresent()) {
@@ -71,7 +73,7 @@ public class PersonService {
 	}
 
 	@Transactional
-	public PersonDTO updatePersonByFirstNameAndLastName(PersonDTO personDTO) throws Exception {
+	public PersonDTO updatePerson(PersonDTO personDTO) throws Exception {
 		Person person = personMapper.convertPersonFromPersonDTO(personDTO);
 		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(person.getFirstName(),
 				person.getLastName());

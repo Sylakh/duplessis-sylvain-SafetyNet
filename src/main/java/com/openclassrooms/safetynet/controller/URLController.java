@@ -23,7 +23,7 @@ public class URLController {
 	private static final Logger logger = LogManager.getLogger("URLController");
 
 	@Autowired
-	private URLService uRLService;
+	private URLService urlService;
 
 	/**
 	 * http://localhost:8080/communityEmail?city=<city> Cette url doit retourner les
@@ -33,7 +33,7 @@ public class URLController {
 	@GetMapping("/communityEmail")
 	public List<String> communityEmail(@RequestParam String city) {
 		logger.info("Request communityEmail sent for city " + city);
-		return uRLService.communityEmail(city);
+		return urlService.communityEmail(city);
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class URLController {
 	@GetMapping("/phoneAlert")
 	public List<String> phoneAlert(@RequestParam String station) {
 		logger.info("Request phoneAlert sent for firestation " + station);
-		return uRLService.phoneAlert(station);
+		return urlService.phoneAlert(station);
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class URLController {
 	@GetMapping("/childAlert")
 	public ChildAlertResponsDTO childAlert(@RequestParam String address) {
 		logger.info("Request childAlert sent for address " + address);
-		return uRLService.childAlert(address);
+		return urlService.childAlert(address);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class URLController {
 	@GetMapping("/fire")
 	public FireResponsDTO fire(@RequestParam String address) {
 		logger.info("Request fire sent for address " + address);
-		return uRLService.fire(address);
+		return urlService.fire(address);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class URLController {
 	@GetMapping("/personInfo")
 	public PersonInfoResponsDTO personInfo(@RequestParam String firstName, @RequestParam String lastName) {
 		logger.info("Request personInfo sent for " + firstName + " " + lastName);
-		return uRLService.personInfo(firstName, lastName);
+		return urlService.personInfo(firstName, lastName);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class URLController {
 	@GetMapping("/flood/stations")
 	public Map<String, List<FloodStationPersonDTO>> floodStations(@RequestParam String[] stations) {
 		logger.info("Request flood/stations sent ");
-		return uRLService.floodStations(stations);
+		return urlService.floodStations(stations);
 	}
 
 	/**
@@ -113,6 +113,6 @@ public class URLController {
 	@GetMapping("/firestation")
 	public Map<String, List<FireStationURLDTO>> fireStation(String stationNumber) {
 		logger.info("Request firestation sent for station " + stationNumber);
-		return uRLService.fireStationURL(stationNumber);
+		return urlService.fireStationURL(stationNumber);
 	}
 }

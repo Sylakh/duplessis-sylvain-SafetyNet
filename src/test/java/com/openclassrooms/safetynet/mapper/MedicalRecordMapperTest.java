@@ -47,8 +47,8 @@ public class MedicalRecordMapperTest {
 		when(medicalRecord.getFirstName()).thenReturn("John");
 		when(medicalRecord.getLastName()).thenReturn("Doe");
 		when(medicalRecord.getBirthDate()).thenReturn("01/01/1990");
-		when(medicalRecord.getMedication()).thenReturn(medications);
-		when(medicalRecord.getAllergy()).thenReturn(allergies);
+		when(medicalRecord.getMedications()).thenReturn(medications);
+		when(medicalRecord.getAllergies()).thenReturn(allergies);
 
 		// When
 		MedicalRecordDTO dto = medicalRecordMapper.convertToDTO(medicalRecord);
@@ -80,9 +80,9 @@ public class MedicalRecordMapperTest {
 		assertEquals("Doe", medicalRecord.getLastName());
 		assertEquals("Jane,Doe", medicalRecord.getName());
 		assertEquals("02/02/1990", medicalRecord.getBirthDate());
-		assertEquals(2, medicalRecord.getMedication().size());
-		assertEquals("medication1", medicalRecord.getMedication().get(0).getMedication());
-		assertEquals(2, medicalRecord.getAllergy().size());
-		assertEquals("allergy1", medicalRecord.getAllergy().get(0).getAllergyName());
+		assertEquals(2, medicalRecord.getMedications().size());
+		assertEquals("medication1", medicalRecord.getMedications().get(0).getMedication());
+		assertEquals(2, medicalRecord.getAllergies().size());
+		assertEquals("allergy1", medicalRecord.getAllergies().get(0).getAllergyName());
 	}
 }

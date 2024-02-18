@@ -25,11 +25,11 @@ public class MedicalRecordMapper {
 		String birthDate = medicalRecord.getBirthDate();
 
 		// Extraction des médicaments
-		List<String> medications = medicalRecord.getMedication().stream().map(Medication::getMedication)
+		List<String> medications = medicalRecord.getMedications().stream().map(Medication::getMedication)
 				.collect(Collectors.toList());
 
 		// Extraction des allergies
-		List<String> allergies = medicalRecord.getAllergy().stream().map(Allergy::getAllergyName)
+		List<String> allergies = medicalRecord.getAllergies().stream().map(Allergy::getAllergyName)
 				.collect(Collectors.toList());
 
 		// Création de l'objet MedicalRecordDTO
@@ -52,7 +52,7 @@ public class MedicalRecordMapper {
 			return convertMedication;
 		}).collect(Collectors.toList());
 
-		medicalRecord.setMedication(medications);
+		medicalRecord.setMedications(medications);
 
 		// Création de la liste d'allergies à partir des informations du DTO
 		List<Allergy> allergies = medicalRecordDTO.allergies().stream().map(allergyName -> {
@@ -62,7 +62,7 @@ public class MedicalRecordMapper {
 			return allergy;
 		}).collect(Collectors.toList());
 
-		medicalRecord.setAllergy(allergies);
+		medicalRecord.setAllergies(allergies);
 
 		return medicalRecord;
 

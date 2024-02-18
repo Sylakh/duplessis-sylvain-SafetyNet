@@ -204,10 +204,10 @@ public class URLServiceTest {
 
 		// Then
 		assertNotNull(response);
-		assertFalse(response.liste_des_personnes().isEmpty());
-		assertEquals("l'adresse 123 Maple St est couverte par la caserne 1 .", response.fire_station());
-		assertEquals(1, response.liste_des_personnes().size());
-		assertEquals("John", response.liste_des_personnes().get(0).firstName());
+		assertFalse(response.persons().isEmpty());
+		assertEquals("l'adresse 123 Maple St est couverte par la caserne 1 .", response.fireStation());
+		assertEquals(1, response.persons().size());
+		assertEquals("John", response.persons().get(0).firstName());
 
 		verify(fireStationRepository).findByAddress(address);
 		verify(fireDTOMapper).convertFireStationIntoFireDTO(any(FireStation.class));
@@ -255,8 +255,8 @@ public class URLServiceTest {
 		medications.add(medication);
 		List<Allergy> allergies = new ArrayList<>();
 		allergies.add(allergy);
-		medicalRecord.setMedication(medications);
-		medicalRecord.setAllergy(allergies);
+		medicalRecord.setMedications(medications);
+		medicalRecord.setAllergies(allergies);
 		medicalRecord.setFirstName("John");
 		medicalRecord.setLastName("Doe");
 		medicalRecord.setBirthDate("01/01/1990");
@@ -304,8 +304,8 @@ public class URLServiceTest {
 		medications.add(medication);
 		List<Allergy> allergies = new ArrayList<>();
 		allergies.add(allergy);
-		medicalRecord1.setMedication(medications);
-		medicalRecord1.setAllergy(allergies);
+		medicalRecord1.setMedications(medications);
+		medicalRecord1.setAllergies(allergies);
 		medicalRecord1.setFirstName("John");
 		medicalRecord1.setLastName("Doe");
 		medicalRecord1.setBirthDate("01/01/1990");
@@ -321,8 +321,8 @@ public class URLServiceTest {
 		person2.setAddress("address 1");
 		person2.setPhone("phone 2");
 		MedicalRecord medicalRecord2 = new MedicalRecord();
-		medicalRecord2.setMedication(medications);
-		medicalRecord2.setAllergy(allergies);
+		medicalRecord2.setMedications(medications);
+		medicalRecord2.setAllergies(allergies);
 		medicalRecord2.setFirstName("Jane");
 		medicalRecord2.setLastName("Doe");
 		medicalRecord2.setBirthDate("01/01/2012");

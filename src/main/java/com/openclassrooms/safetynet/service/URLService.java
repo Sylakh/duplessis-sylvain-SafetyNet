@@ -181,11 +181,11 @@ public class URLService {
 			listPerson = fireStation.getPersons();
 			for (Person person : listPerson) {
 				List<String> medications = new ArrayList<>();
-				for (Medication medication : person.getMedicalRecord().getMedication()) {
+				for (Medication medication : person.getMedicalRecord().getMedications()) {
 					medications.add(medication.getMedication());
 				}
 				List<String> allergies = new ArrayList<>();
-				for (Allergy allergy : person.getMedicalRecord().getAllergy()) {
+				for (Allergy allergy : person.getMedicalRecord().getAllergies()) {
 					allergies.add(allergy.getAllergyName());
 				}
 				listFloodStationPersonDTO
