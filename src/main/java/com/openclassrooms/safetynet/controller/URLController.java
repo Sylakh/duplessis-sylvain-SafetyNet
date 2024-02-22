@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.safetynet.DTO.ChildAlertResponsDTO;
+import com.openclassrooms.safetynet.DTO.CommonDTO;
 import com.openclassrooms.safetynet.DTO.FireResponsDTO;
-import com.openclassrooms.safetynet.DTO.FireStationURLDTO;
 import com.openclassrooms.safetynet.DTO.FloodStationPersonDTO;
 import com.openclassrooms.safetynet.DTO.PersonInfoResponsDTO;
 import com.openclassrooms.safetynet.service.URLService;
@@ -111,7 +111,7 @@ public class URLController {
 	 * desservie.
 	 */
 	@GetMapping("/firestation")
-	public Map<String, List<FireStationURLDTO>> fireStation(String stationNumber) {
+	public Map<String, List<CommonDTO>> fireStation(String stationNumber) {
 		logger.info("Request firestation sent for station " + stationNumber);
 		return urlService.fireStationURL(stationNumber);
 	}

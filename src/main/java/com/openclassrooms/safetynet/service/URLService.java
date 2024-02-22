@@ -11,17 +11,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.openclassrooms.safetynet.DTO.ChildAlertDTO;
 import com.openclassrooms.safetynet.DTO.ChildAlertResponsDTO;
-import com.openclassrooms.safetynet.DTO.FireDTO;
+import com.openclassrooms.safetynet.DTO.CommonDTO;
 import com.openclassrooms.safetynet.DTO.FireResponsDTO;
-import com.openclassrooms.safetynet.DTO.FireStationURLDTO;
 import com.openclassrooms.safetynet.DTO.FloodStationPersonDTO;
-import com.openclassrooms.safetynet.DTO.PersonInfoDTO;
 import com.openclassrooms.safetynet.DTO.PersonInfoResponsDTO;
-import com.openclassrooms.safetynet.mapper.ChildAlertMapper;
-import com.openclassrooms.safetynet.mapper.FireDTOMapper;
-import com.openclassrooms.safetynet.mapper.PersonInfoDTOMapper;
+import com.openclassrooms.safetynet.mapper.CommonDTOMapper;
 import com.openclassrooms.safetynet.model.Allergy;
 import com.openclassrooms.safetynet.model.FireStation;
 import com.openclassrooms.safetynet.model.MedicalRecord;
@@ -49,13 +44,7 @@ public class URLService {
 	private MedicalRecordRepository patientRepository;
 
 	@Autowired
-	private ChildAlertMapper childAlertMapper;
-
-	@Autowired
-	private FireDTOMapper fireDTOMapper;
-
-	@Autowired
-	private PersonInfoDTOMapper personInfoDTOMapper;
+	private CommonDTOMapper fireDTOMapper;
 
 	public List<String> communityEmail(String city) {
 		logger.info("Request communityEmail sent for city " + city);
@@ -88,7 +77,7 @@ public class URLService {
 
 	public ChildAlertResponsDTO childAlert(String address) {
 		logger.info("Request childAlert sent for address " + address);
-		List<ChildAlertDTO> listChildAlertDTO = new ArrayList<>();
+		List<CommonDTO> listChildAlertDTO = new ArrayList<>();
 		List<Person> listPerson = new ArrayList<>();
 		listPerson = personRepository.findAllByAddress(address);
 		for (Person person : listPerson) {
@@ -96,16 +85,16 @@ public class URLService {
 					.findByFirstNameAndLastName(person.getFirstName(), person.getLastName());
 			if (optionalPatient.isPresent()) {
 				MedicalRecord patient = optionalPatient.get();
-				listChildAlertDTO.add(childAlertMapper.convertPatientToChildAlertDTO(patient));
+				listChildAlertDTO.add(fireDTOMapper.convertPatientToChildAlertDTO(patient));
 			} else {
 				logger.info(
 						"the person " + person.getFirstName() + " " + person.getLastName() + "has no medical records.");
 			}
 		}
 
-		List<ChildAlertDTO> listChild = new ArrayList<>();
-		List<ChildAlertDTO> listAdult = new ArrayList<>();
-		for (ChildAlertDTO childAlertDTO : listChildAlertDTO) {
+		List<CommonDTO> listChild = new ArrayList<>();
+		List<CommonDTO> listAdult = new ArrayList<>();
+		for (CommonDTO childAlertDTO : listChildAlertDTO) {
 			if (childAlertDTO.age() > 18) {
 				listAdult.add(childAlertDTO);
 			} else {
@@ -126,7 +115,7 @@ public class URLService {
 		Optional<FireStation> optionalFireStation = fireStationRepository.findByAddress(address);
 		if (optionalFireStation.isPresent()) {
 			FireStation fireStationFound = optionalFireStation.get();
-			List<FireDTO> listPersons = fireDTOMapper.convertFireStationIntoFireDTO(fireStationFound);
+			List<CommonDTO> listPersons = fireDTOMapper.convertFireStationIntoFireDTO(fireStationFound);
 			return new FireResponsDTO(
 					"l'adresse " + address + " est couverte par la caserne " + fireStationFound.getStation() + " .",
 					listPersons);
@@ -142,11 +131,11 @@ public class URLService {
 		List<Person> listPerson = new ArrayList<>();
 		listPerson = personRepository.findAllByLastName(lastName);
 		Optional<Person> optionalPerson = personRepository.findByFirstNameAndLastName(firstName, lastName);
-		PersonInfoDTO personInfoFoundDTO = null;
+		CommonDTO personInfoFoundDTO = null;
 		if (optionalPerson.isPresent()) {
 			Person personFound = optionalPerson.get();
 			logger.info("person found");
-			personInfoFoundDTO = personInfoDTOMapper.convertPersonToPersonInfoDTO(personFound);
+			personInfoFoundDTO = fireDTOMapper.convertPersonToPersonInfoDTO(personFound);
 			listPerson.remove(personFound);
 		} else {
 			logger.info("person not found");
@@ -188,10 +177,10 @@ public class URLService {
 				for (Allergy allergy : person.getMedicalRecord().getAllergies()) {
 					allergies.add(allergy.getAllergyName());
 				}
-				listFloodStationPersonDTO
-						.add(new FloodStationPersonDTO(person.getFirstName(), person.getLastName(), person.getPhone(),
-								person.getMedicalRecord().calculateAge(person.getMedicalRecord().getBirthDate()),
-								medications, allergies));
+				listFloodStationPersonDTO.add(new FloodStationPersonDTO(person.getFirstName(), person.getLastName(),
+						person.getPhone(),
+						(Integer) person.getMedicalRecord().calculateAge(person.getMedicalRecord().getBirthDate()),
+						medications, allergies));
 				allergies = null;
 				medications = null;
 			}
@@ -201,17 +190,17 @@ public class URLService {
 		return floodStationsRespons;
 	}
 
-	public Map<String, List<FireStationURLDTO>> fireStationURL(String station) {
+	public Map<String, List<CommonDTO>> fireStationURL(String station) {
 		logger.info("Request firestation sent for station " + station);
 		List<FireStation> listFireStation = fireStationRepository.findAllByStation(station);
-		List<FireStationURLDTO> listFireStationURLDTO = new ArrayList<>();
+		List<CommonDTO> listFireStationURLDTO = new ArrayList<>();
 		int countAdult = 0;
 		int countChildren = 0;
 		for (FireStation fireStation : listFireStation) {
 			List<Person> listPerson = fireStation.getPersons();
 			for (Person person : listPerson) {
-				listFireStationURLDTO.add(new FireStationURLDTO(person.getFirstName(), person.getLastName(),
-						person.getAddress(), person.getPhone()));
+				listFireStationURLDTO.add(new CommonDTO(person.getFirstName(), person.getLastName(), person.getPhone(),
+						person.getAddress(), null, null, null, null));
 				if (person.getMedicalRecord().calculateAge(person.getMedicalRecord().getBirthDate()) > 18) {
 					countAdult += 1;
 				} else {
@@ -219,7 +208,7 @@ public class URLService {
 				}
 			}
 		}
-		Map<String, List<FireStationURLDTO>> map = new HashMap<>();
+		Map<String, List<CommonDTO>> map = new HashMap<>();
 		String key = "Adults: " + countAdult + ", Enfants: " + countChildren;
 		map.put(key, listFireStationURLDTO);
 		return map;

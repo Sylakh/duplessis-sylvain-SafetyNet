@@ -22,16 +22,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.openclassrooms.safetynet.DTO.ChildAlertDTO;
 import com.openclassrooms.safetynet.DTO.ChildAlertResponsDTO;
-import com.openclassrooms.safetynet.DTO.FireDTO;
+import com.openclassrooms.safetynet.DTO.CommonDTO;
 import com.openclassrooms.safetynet.DTO.FireResponsDTO;
-import com.openclassrooms.safetynet.DTO.FireStationURLDTO;
 import com.openclassrooms.safetynet.DTO.FloodStationPersonDTO;
 import com.openclassrooms.safetynet.DTO.PersonInfoResponsDTO;
-import com.openclassrooms.safetynet.mapper.ChildAlertMapper;
-import com.openclassrooms.safetynet.mapper.FireDTOMapper;
-import com.openclassrooms.safetynet.mapper.PersonInfoDTOMapper;
+import com.openclassrooms.safetynet.mapper.CommonDTOMapper;
 import com.openclassrooms.safetynet.model.Allergy;
 import com.openclassrooms.safetynet.model.FireStation;
 import com.openclassrooms.safetynet.model.MedicalRecord;
@@ -55,13 +51,7 @@ public class URLServiceTest {
 	private MedicalRecordRepository medicalRecordRepository;
 
 	@Mock
-	private ChildAlertMapper childAlertMapper;
-
-	@Mock
-	private FireDTOMapper fireDTOMapper;
-
-	@Mock
-	private PersonInfoDTOMapper personInfoDTOMapper;
+	private CommonDTOMapper fireDTOMapper;
 
 	@InjectMocks
 	private URLService urlService;
@@ -147,10 +137,10 @@ public class URLServiceTest {
 				.thenReturn(Optional.of(childMedicalRecord));
 		when(medicalRecordRepository.findByFirstNameAndLastName("Jane", "Doe"))
 				.thenReturn(Optional.of(adultMedicalRecord));
-		when(childAlertMapper.convertPatientToChildAlertDTO(any(MedicalRecord.class))).thenAnswer(invocation -> {
+		when(fireDTOMapper.convertPatientToChildAlertDTO(any(MedicalRecord.class))).thenAnswer(invocation -> {
 			MedicalRecord record = invocation.getArgument(0);
-			return new ChildAlertDTO(record.getFirstName(), record.getLastName(),
-					record.calculateAge(record.getBirthDate()));
+			return new CommonDTO(record.getFirstName(), record.getLastName(), null, null, null,
+					record.calculateAge(record.getBirthDate()), null, null);
 		});
 
 		// When
@@ -167,8 +157,7 @@ public class URLServiceTest {
 		verify(personRepository).findAllByAddress(address);
 		verify(medicalRecordRepository, times(personsAtAddress.size())).findByFirstNameAndLastName(anyString(),
 				anyString());
-		verify(childAlertMapper, times(personsAtAddress.size()))
-				.convertPatientToChildAlertDTO(any(MedicalRecord.class));
+		verify(fireDTOMapper, times(personsAtAddress.size())).convertPatientToChildAlertDTO(any(MedicalRecord.class));
 	}
 
 	@Test
@@ -192,8 +181,8 @@ public class URLServiceTest {
 		medicalRecord1.setLastName("Doe");
 		medicalRecord1.setBirthDate("01/01/1990");
 
-		List<FireDTO> fireDTOs = new ArrayList<>();
-		FireDTO fireDTO = new FireDTO("John", "Doe", "phone", 30, null, null);
+		List<CommonDTO> fireDTOs = new ArrayList<>();
+		CommonDTO fireDTO = new CommonDTO("John", "Doe", "phone", null, null, 30, null, null);
 		fireDTOs.add(fireDTO);
 
 		when(fireStationRepository.findByAddress(address)).thenReturn(optionalFireStation);
@@ -336,7 +325,7 @@ public class URLServiceTest {
 		when(fireStationRepository.findAllByStation(station)).thenReturn(fireStations);
 
 		// When
-		java.util.Map<String, List<FireStationURLDTO>> response = urlService.fireStationURL(station);
+		java.util.Map<String, List<CommonDTO>> response = urlService.fireStationURL(station);
 
 		// Then
 		assertNotNull(response);
@@ -375,10 +364,10 @@ public class URLServiceTest {
 				.thenReturn(Optional.of(childMedicalRecord));
 		when(medicalRecordRepository.findByFirstNameAndLastName("Jane", "Doe"))
 				.thenReturn(Optional.of(adultMedicalRecord));
-		when(childAlertMapper.convertPatientToChildAlertDTO(any(MedicalRecord.class))).thenAnswer(invocation -> {
+		when(fireDTOMapper.convertPatientToChildAlertDTO(any(MedicalRecord.class))).thenAnswer(invocation -> {
 			MedicalRecord record = invocation.getArgument(0);
-			return new ChildAlertDTO(record.getFirstName(), record.getLastName(),
-					record.calculateAge(record.getBirthDate()));
+			return new CommonDTO(record.getFirstName(), record.getLastName(), null, null, null,
+					record.calculateAge(record.getBirthDate()), null, null);
 		});
 
 		// When
@@ -408,8 +397,8 @@ public class URLServiceTest {
 		medicalRecord1.setLastName("Doe");
 		medicalRecord1.setBirthDate("01/01/1990");
 
-		List<FireDTO> fireDTOs = new ArrayList<>();
-		FireDTO fireDTO = new FireDTO("John", "Doe", "phone", 30, null, null);
+		List<CommonDTO> fireDTOs = new ArrayList<>();
+		CommonDTO fireDTO = new CommonDTO("John", "Doe", "phone", null, null, 30, null, null);
 		fireDTOs.add(fireDTO);
 
 		when(fireStationRepository.findByAddress(address)).thenReturn(optionalFireStation);

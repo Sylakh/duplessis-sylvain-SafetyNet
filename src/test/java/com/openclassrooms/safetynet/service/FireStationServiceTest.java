@@ -110,6 +110,7 @@ public class FireStationServiceTest {
 	public void deleteAnAddressOrAStationByStationTest() throws Exception {
 		// Given
 		FireStation fireStation = new FireStation();
+		fireStation.setAddress("");
 		fireStation.setStation("Test Station");
 		List<FireStation> fireStations = new ArrayList<>();
 		fireStations.add(fireStation);
@@ -160,10 +161,12 @@ public class FireStationServiceTest {
 	@Test
 	public void deleteAnAddressOrAStationNotFoundTest() {
 		// Given
-		FireStation fireStation = new FireStation(); // Aucune adresse ni station définie
+		String address = "";
+		String station = "";
+
 		// When & Then
 		assertThrows(Exception.class, () -> {
-			fireStationService.deleteFireStation(fireStation.getAddress(), fireStation.getStation());
+			fireStationService.deleteFireStation(address, station);
 		});
 	}
 }
